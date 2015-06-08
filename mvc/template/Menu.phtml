@@ -1,0 +1,79 @@
+<?='<?xml version="1.0" encoding="UTF-8"?>' /* @var $viewData MenuViewData*/  ?>
+<vxml version="2.1" xml:lang="es-ES">
+	<form id="MainMenu">
+		<field name="menuOption">
+			<prompt>
+
+				<?=/*SIMPLEDATA PETA CAPULLO*/ $viewData->getTitle()?> <break/>
+			</prompt>
+			<prompt>
+				<?=$viewData->getPrompt(); ?>
+				<? if ($viewData->existsPreviousPageLink()) { ?>
+					<?= $viewData->getPreviousPagePrompt(); ?>
+				<? } ?>
+
+				<? if ($viewData->existsMainMenuLink()) { ?>
+					<?= $viewData->getMainMenuPrompt()
+					; ?>
+				<? } ?>
+			</prompt>
+
+			<grammar type="text/gsl">
+				<?= $viewData->getGrammarOptions(); ?>
+			</grammar>
+
+			<noinput>
+				Quieres decir algo puto imbécil!.
+				Lo siento, no he entendido lo que ha dicho. Por favor intentelo de nuevo.
+				<reprompt/>
+			</noinput>
+
+			<nomatch>
+				Sacate la polla de la boca puto idiota.
+				Lo siento, no he entendido lo que ha dicho. Por favor intentelo de nuevo.
+				<reprompt/>
+			</nomatch>
+
+		</field>
+
+		<filled>
+
+				<?if ($viewData->existsMainMenuLink()) { ?>
+					<if cond="menuOption == <?=KeyPhone::toDigit($viewData->getMainMenuOption()) ?>">
+						<prompt>Has elegido Volver al menú principal.</prompt>
+						<submit next="<?= $viewData->getMainMenuLink()->getHrefForRender() ?>"   />
+
+					</if>
+				<?}?>
+				<?if ($viewData->existsPreviousPageLink()) { ?>
+					<if cond="menuOption == '<?=KeyPhone::toDigit($viewData->getPreviousPageOption()) ?>'">
+						<prompt>Has elegido volver a la página anterior ?> </prompt>
+						<submit next="<?= $viewData->getPreviousPageLink()->getHrefForRender() ?>" />
+					</if>
+				<?}?>
+
+
+				<?$options = $viewData->getOptions();
+				if (!empty($options)) {
+					reset($options);
+					$firstOption = array_shift($options);
+					/* @var $firstOption MenuOption */
+					?>
+
+					<if cond="<?= $firstOption->getEqualCondition("menuOption") ?>">
+						<prompt>Has elegido <?=$firstOption->getInfoOption()?> </prompt>
+						<submit next="<?= $firstOption->getLink()->getHrefForRender() ?>"  />
+						<? foreach ($options as $option) { ?>
+							<elseif cond="<?= $option->getEqualCondition("menuOption") ?>"/>
+								<prompt>Has elegido <?=$option->getInfoOption()?> </prompt>
+								<submit next="<?= $option->getLink()->getHrefForRender() ?>"  />
+						<? } ?>
+						<? if ($viewData->existsDefaultOption()) { ?>
+							<else/>
+							<submit next="<? $viewData->getDefaultOption()->getHrefForRender() ?>"  method="post"  />
+						<? } ?>
+					</if>
+				<? } ?>
+		</filled>
+	</form>
+</vxml>
