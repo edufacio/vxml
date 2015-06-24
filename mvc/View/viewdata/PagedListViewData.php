@@ -3,10 +3,13 @@ class PagedListViewData extends MenuViewData
 {
 
 	const PREVIOUS_PAGE = 'página anterior';
+	const FIRST_PAGE = 'primera página';
 	const NEXT_PAGE = 'página siguiente';
+	const LAST_PAGE = 'última página';
 	private $currentPageNumber;
 	private $totalPages;
 	private $titleList;
+	private $paginationOptions = array();
 
 	public function setTitleList($titleList)
 	{
@@ -49,17 +52,44 @@ class PagedListViewData extends MenuViewData
 	 */
 	public function setNextPageNumberLink(Link $nextPageLink)
 	{
-		$this->addOption("Ir a la página siguiente", self::NEXT_PAGE, $nextPageLink);
+		$this->addPaginationOption("Ir a la página siguiente", self::NEXT_PAGE, $nextPageLink);
 	}
 
+	/**
+	 * @param Link $firstPageLink
+	 */
+	public function setFirstPageNumberLink(Link $firstPageLink)
+	{
+		$this->addPaginationOption("Ir a la primera página", self::FIRST_PAGE, $firstPageLink);
+	}
+
+	/**
+	 * @param Link $lastPageLink
+	 */
+	public function setLastPageNumberLink(Link $lastPageLink)
+	{
+		$this->addPaginationOption("Ir a la última página", self::LAST_PAGE, $lastPageLink);
+	}
 
 	/**
 	 * @param Link $previousPageNumberLink
 	 */
 	public function setPreviousPageNumberLink(Link $previousPageNumberLink)
 	{
-		$this->addOption("Ir a la página anterior", self::PREVIOUS_PAGE, $previousPageNumberLink);
+		$this->addPaginationOption("Ir a la página anterior", self::PREVIOUS_PAGE, $previousPageNumberLink);
 	}
+
+	public function addPaginationOption($optionInfo, $option, Link $link)
+	{
+		$this->assertOptionIsValid($option);
+		$this->paginationOptions[$option] = new MenuOption($optionInfo, $option, $link);
+	}
+
+	public function getOptions()
+	{
+		return array_merge($this->options, $this->paginationOptions);
+	}
+
 
 	/**
 	 * @param $totalPages

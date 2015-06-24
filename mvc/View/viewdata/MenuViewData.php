@@ -2,7 +2,7 @@
 class MenuViewData extends SimpleViewData
 {
 	private $title;
-    private $options = array();
+    protected $options = array();
     private $defaultOption = null;
 
 	public function setTitle($title)
@@ -62,11 +62,12 @@ class MenuViewData extends SimpleViewData
     {
         $phrases = '';
 	    /* @var $option MenuOption */
-        foreach ($this->options as $option) {
+	    $options = $this->getOptions();
+        foreach ($options as $option) {
             $phrases .= $option->getOptionForGrammar();
         }
-        $phrases .= $this->getMainMenuOptionGrammar();
-        $phrases .= $this->getPreviousPageOptionGrammar();
+        $phrases .= $this->getMainMenuOptionGslItem();
+        $phrases .= $this->getPreviousPageOptionGslItem();
         return '[' . $phrases . ']';
     }
 
@@ -79,6 +80,11 @@ class MenuViewData extends SimpleViewData
 
 	protected function getReservedOptions() {
 		return  array(KeyPhone::KEY_0, KeyPhone::KEY_STAR);
+	}
+
+	public function getGrammar()
+	{
+		return '<grammar type="text/gsl">' . $this->getGrammarOptions() . '</grammar>';
 	}
 
 }

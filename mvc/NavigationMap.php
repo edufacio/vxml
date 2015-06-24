@@ -1,7 +1,7 @@
 <?php
 Class NavigationMap
 {
-    const GET_PARAMS = 'getParams';
+    const PARAMS = 'getParams';
     const POST_PARAMS = 'postParams';
     const DEFAULT_CONTROLLER = 'IndexVxmlFilm';
     const DEFAULT_ACTION = 'index';
@@ -14,45 +14,38 @@ Class NavigationMap
 	private static $CONFIG = array(
         "IndexVxmlFilm" => array(
             "index" => array(
-                self::GET_PARAMS => array(),
-                self::POST_PARAMS => array(),
+                self::PARAMS => array(),
             ),
             "searchTitle" => array(
-                self::GET_PARAMS => array(),
-                self::POST_PARAMS => array(),
+                self::PARAMS => array(),
             ),
             "searchActor" => array(
-                self::GET_PARAMS => array(),
-                self::POST_PARAMS => array(),
+                self::PARAMS => array(),
             ),
             "searchDirector" => array(
-                self::GET_PARAMS => array(),
-                self::POST_PARAMS => array(),
+                self::PARAMS => array(),
             ),
 	        "getCartelera" => array(
-		        self::GET_PARAMS => array('page'),
-		        self::POST_PARAMS => array(),
+		        self::PARAMS => array('page'),
 		        self::DEFAULT_VALUE => array('page' => 0),
             ),
             "searchTitleForm" => array(
-                self::GET_PARAMS => array(),
-                self::POST_PARAMS => array('query'),
+                self::PARAMS => array('query', 'page'),
+	            self::DEFAULT_VALUE => array('page' => 0),
             ),
             "searchActorForm" => array(
-                self::GET_PARAMS => array(),
-                self::POST_PARAMS => array('query'),
+	            self::PARAMS => array('query', 'page'),
+	            self::DEFAULT_VALUE => array('page' => 0),
             ),
             "searchDirectorForm" => array(
-                self::GET_PARAMS => array(),
-                self::POST_PARAMS => array('query'),
+	            self::PARAMS => array('query', 'page'),
+	            self::DEFAULT_VALUE => array('page' => 0),
             ),
             "getFilm" => array(
-                self::GET_PARAMS => array('filmId', 'breadCrumb'),
-                self::POST_PARAMS => array(),
+                self::PARAMS => array('filmId', 'breadCrumb'),
             ),
 	        "getFilmDetailed" => array(
-		        self::GET_PARAMS => array('filmId', 'breadCrumb'),
-		        self::POST_PARAMS => array(),
+		        self::PARAMS => array('filmId', 'breadCrumb'),
 	        ),
         ),
     );
@@ -67,10 +60,10 @@ Class NavigationMap
         return self::DEFAULT_CONTROLLER;
     }
 
-    public function isValidGetParam($controller, $action, $paramName)
+    public function isValidParam($controller, $action, $paramName)
     {
         if ($this->isValidAction($controller, $action)) {
-            return in_array($paramName, self::$CONFIG[$controller][$action][self::GET_PARAMS]);
+            return in_array($paramName, self::$CONFIG[$controller][$action][self::PARAMS]);
         }
         return false;
     }
@@ -103,27 +96,29 @@ Class NavigationMap
     {
         $data = array();
 
-        $defaultParams = isset(self::$CONFIG[$controllerName][$action][self::GET_PARAMS]) ?
-	        self::$CONFIG[$controllerName][$action][self::GET_PARAMS] : array();
-        $validParams = self::$CONFIG[$controllerName][$action][self::GET_PARAMS];
+        $defaultParams = isset(self::$CONFIG[$controllerName][$action][self::DEFAULT_VALUE]) ?
+	        self::$CONFIG[$controllerName][$action][self::DEFAULT_VALUE] : array();
+        $validParams = self::$CONFIG[$controllerName][$action][self::PARAMS];
 
         foreach ($validParams as $paramName) {
-            if (isset($_GET[$paramName])) {
+	        if (isset($_POST[$paramName])) {
+		        $data[$paramName] = $_POST[$paramName];
+	        } elseif (isset($_GET[$paramName])) {
                 $data[$paramName] = $_GET[$paramName];
-            } elseif($defaultParams[$paramName]) {
+            } elseif(isset($defaultParams[$paramName])) {
 	            $data[$paramName] = $defaultParams[$paramName];
-            }
-        }
-
-        $validParams = self::$CONFIG[$controllerName][$action][self::POST_PARAMS];
-        foreach ($validParams as $paramName) {
-            if (isset($_POST[$paramName])) {
-                $data[$paramName] = $_POST[$paramName];
-            } elseif($defaultParams[$paramName]) {
-	            $data[$paramName] = $defaultParams[$paramName];;
-            }
+            } else {
+		        throw new ParamNotFoundException($controllerName, $action, $paramName);
+	        }
         }
 
         return $data;
     }
+}
+
+Class ParamNotFoundException extends InvalidArgumentException {
+	function __construct($controller, $action , $paramName)
+	{
+		parent::__construct("$paramName without default value is not definded on $controller => $action");
+	}
 }

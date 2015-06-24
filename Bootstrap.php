@@ -1,4 +1,8 @@
 <?php
+define('BASE_PATH', dirname(__FILE__));
+define('GRAMMAR_PATH', BASE_PATH . "/grammar/" );
+define('GRAMMAR_CSV_PATH', GRAMMAR_PATH . "csv/" );
+
 Class Bootstrap
 {
 	const BOOTSTRAP_FILE = 'bootstrap.txt';
@@ -6,6 +10,7 @@ Class Bootstrap
 
 	public static function load()
 	{
+
 		$requirePaths = explode("\n", trim(file_get_contents(self::BOOTSTRAP_FILE)));
 		foreach ($requirePaths as $requirePath) {
 			self::requirePath(dirname(__FILE__) . '/' . $requirePath);

@@ -1,35 +1,31 @@
 <?='<?xml version="1.0" encoding="UTF-8"?>' /* @var $viewData MenuViewData*/  ?>
-<vxml version="2.1" xml:lang="es-ES">
+<vxml version="2.1" xml:lang="<?=$viewData->getLanguage()?>">
 	<form id="MainMenu">
 		<field name="menuOption">
 			<prompt>
 
-				<?=/*SIMPLEDATA PETA CAPULLO*/ $viewData->getTitle()?> <break/>
+				<?= $viewData->getTitle()?> <break/>
 			</prompt>
 			<prompt>
 				<?=$viewData->getPrompt(); ?>
 				<? if ($viewData->existsPreviousPageLink()) { ?>
-					<?= $viewData->getPreviousPagePrompt(); ?>
+					<?= $viewData->getPreviousPagePrompt() ?>
 				<? } ?>
 
 				<? if ($viewData->existsMainMenuLink()) { ?>
-					<?= $viewData->getMainMenuPrompt()
-					; ?>
+					<?= $viewData->getMainMenuPrompt() ?>
 				<? } ?>
 			</prompt>
 
-			<grammar type="text/gsl">
-				<?= $viewData->getGrammarOptions(); ?>
-			</grammar>
+			<?= $viewData->getGrammar() ?>
+
 
 			<noinput>
-				Quieres decir algo puto imbécil!.
 				Lo siento, no he entendido lo que ha dicho. Por favor intentelo de nuevo.
 				<reprompt/>
 			</noinput>
 
 			<nomatch>
-				Sacate la polla de la boca puto idiota.
 				Lo siento, no he entendido lo que ha dicho. Por favor intentelo de nuevo.
 				<reprompt/>
 			</nomatch>

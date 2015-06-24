@@ -1,10 +1,13 @@
 <?php
 
-class SimpleViewData
+Abstract class SimpleViewData
 {
-	protected  $prompt;
+	protected $prompt;
+	private $language = Language::esES;
 	private $previousPageLink;
 	private $mainMenuLink;
+
+	abstract function getGrammar();
 
 	/**
 	 * @param String $prompt
@@ -65,10 +68,19 @@ class SimpleViewData
 	/**
 	 * @return String
 	 */
-	protected function getMainMenuOptionGrammar()
+	protected function getMainMenuOptionGslItem()
 	{
 		if ($this->existsMainMenuLink()) {
 			return '(' . $this->getMainMenuOption() . ')';
+		} else {
+			return '';
+		}
+	}
+
+	protected function getMainMenuOptionItem()
+	{
+		if ($this->existsMainMenuLink()) {
+			return '<item>' . $this->getMainMenuOption() . '</item>' . PHP_EOL;
 		} else {
 			return '';
 		}
@@ -115,9 +127,29 @@ class SimpleViewData
 	}
 
 	/**
+	 * @see Language::XX
+	 *
+	 * @param $language
+	 */
+	public function setLanguage($language)
+	{
+		$this->language = $language;
+	}
+
+	/**
+	 * @see Language:XX
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return $this->language;
+	}
+
+
+	/**
 	 * @return String
 	 */
-	protected function getPreviousPageOptionGrammar()
+	protected function getPreviousPageOptionGslItem()
 	{
 		if ($this->existsPreviousPageLink()) {
 			return '(' . $this->getPreviousPageOption() . ')';
@@ -126,11 +158,22 @@ class SimpleViewData
 		}
 	}
 
-	protected function getWeakBreak() {
+	protected function getPreviousPageOptionItem()
+	{
+		if ($this->existsMainMenuLink()) {
+			return '<item>' . $this->getPreviousPageOption() . '</item>' . PHP_EOL;
+		} else {
+			return '';
+		}
+	}
+
+	protected function getWeakBreak()
+	{
 		return '<break strength="weak" />';
 	}
 
-	protected function getNormalBreak() {
+	protected function getNormalBreak()
+	{
 		return '<break />';
 	}
 }

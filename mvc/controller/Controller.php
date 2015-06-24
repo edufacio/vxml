@@ -4,9 +4,9 @@ Abstract Class Controller {
 
     private $navigation;
 
-    function __construct()
+    function __construct(NavigationMap $navigationMap)
     {
-        $this->navigation = new NavigationMap();
+        $this->navigation = $navigationMap;
     }
 
     abstract public function index($data);

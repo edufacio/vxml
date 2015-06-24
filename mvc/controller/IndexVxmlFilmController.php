@@ -31,6 +31,7 @@ Class IndexVxmlFilmController extends Controller {
 		list($totalPages, $films) = FilmAffinityApi::getInstance()->getCartelera($data[self::PAGE_PARAM], self::FILMS_BY_PAGE);
 		$viewData = $this->getFilmsViewData($films, $totalPages, $data[self::PAGE_PARAM], __FUNCTION__, $data);
 		$viewData->setMainMenuLink($this->getMainMenuLink());
+		$viewData->setPreviousPageLink($this->getMainMenuLink());
 		$viewData->setTitle("Peliculas en cartelera.");
 		$view = new MenuView();
 		$view->render($viewData);
@@ -57,6 +58,13 @@ Class IndexVxmlFilmController extends Controller {
 		if ($currentPageNumber < $totalPages && !empty($method)) {
 			$params[self::PAGE_PARAM] = $currentPageNumber + 1;
 			$viewData->setNextPageNumberLink($this->getLink(self::CONTROLLER_NAME, $method, $params));
+		}
+
+		if ($totalPages > 1) {
+			$params[self::PAGE_PARAM] = $totalPages;
+			$viewData->setLastPageNumberLink($this->getLink(self::CONTROLLER_NAME, $method, $params));
+			$params[self::PAGE_PARAM] = 0;
+			$viewData->setFirstPageNumberLink($this->getLink(self::CONTROLLER_NAME, $method, $params));
 		}
 
 		return $viewData;
@@ -91,41 +99,70 @@ Class IndexVxmlFilmController extends Controller {
 
     public function searchTitle($data)
     {
+	    $viewData = new FormViewData();
+	    $viewData->setMainMenuLink($this->getMainMenuLink());
+	    $viewData->setVarReturnedName(self::QUERY_PARAM);
+	    $viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'searchTitleForm'));
+	    $viewData->setPrompt("Busqueda por titulo. por favor diga el titulo a buscar");
+	    $viewData->addInput(Language::esES, "La jungla de cristal", true);
+	    $viewData->addInput(Language::esES, "matar a un ruiseñor", true);
+	    $viewData->addInput(Language::enUS, "love story", true);
+	    $this->instantiateView('FormView')->render($viewData);
     }
 
     public function searchTitleForm($data)
     {
-        $results = FilmAffinityApi::getInstance()->searchTitle($data[self::QUERY_PARAM]);
-        $data["films"] = $this->getFilmsViewData($results);
-        $this->instantiateView('FilmsResultView')->prepare($data);
+	    list($totalPages, $films) = FilmAffinityApi::getInstance()->searchTitle($data[self::QUERY_PARAM], $data[self::PAGE_PARAM], self::FILMS_BY_PAGE);
+	    $viewData = $this->getFilmsViewData($films, $totalPages, $data[self::PAGE_PARAM], __FUNCTION__, $data);
+	    $viewData->setMainMenuLink($this->getMainMenuLink());
+	    $viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, 'searchTitle'));
+	    $viewData->setTitle("Peliculas encontradas para el titulo." . $data[self::QUERY_PARAM]);
+	    $view = new MenuView();
+	    $view->render($viewData);
     }
-
-
 
     public function searchActor($data)
     {
-        $data['formLink'] = $this->getLink(self::CONTROLLER_NAME, "searchActorForm");
-        $this->instantiateView('FilmActorSearchFormView')->prepare($data);
+	    $viewData = new FormViewData();
+	    $viewData->setMainMenuLink($this->getMainMenuLink());
+	    $viewData->setVarReturnedName(self::QUERY_PARAM);
+	    $viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'searchActorForm'));
+	    $viewData->setPrompt("Busqueda por actor. Por favor diga el actor a buscar");
+	    $viewData->addInputFromCsv(GRAMMAR_CSV_PATH . "/actors2.csv");
+	    $this->instantiateView('FormView')->render($viewData);
     }
 
     public function searchActorForm($data)
     {
-        $results = FilmAffinityApi::getInstance()->searchActor($data[self::QUERY_PARAM]);
-        $data["films"] = $this->getFilmsViewData($results);
-        $this->instantiateView('FilmsResultView')->prepare($data);
+	    list($totalPages, $films) = FilmAffinityApi::getInstance()->searchActor($data[self::QUERY_PARAM], $data[self::PAGE_PARAM], self::FILMS_BY_PAGE);
+	    $viewData = $this->getFilmsViewData($films, $totalPages, $data[self::PAGE_PARAM], __FUNCTION__, $data);
+	    $viewData->setMainMenuLink($this->getMainMenuLink());
+	    $viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, 'searchActor'));
+	    $viewData->setTitle("Peliculas encontradas para el actor " . $data[self::QUERY_PARAM]);
+	    $view = new MenuView();
+	    $view->render($viewData);
     }
 
     public function searchDirector($data)
     {
-        $data['formLink'] = $this->getLink(self::CONTROLLER_NAME, "searchDirectorForm");
-        $this->instantiateView('FilmDirectorSearchFormView')->prepare($data);
+	    $viewData = new FormViewData();
+	    $viewData->setMainMenuLink($this->getMainMenuLink());
+	    $viewData->setVarReturnedName(self::QUERY_PARAM);
+	    $viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'searchDirectorForm'));
+	    $viewData->setPrompt("Busqueda por director. Por favor diga el director a buscar");
+	    $viewData->addInputFromCsv(GRAMMAR_CSV_PATH . "/director.csv");
+	    $this->instantiateView('FormView')->render($viewData);
     }
 
     public function searchDirectorForm($data)
     {
-        $results = FilmAffinityApi::getInstance()->searchDirector($data[self::QUERY_PARAM]);
-        $data["films"] = $this->getFilmsViewData($results);
-        $this->instantiateView('FilmsResultView')->prepare($data);
+	    list($totalPages, $films) = FilmAffinityApi::getInstance()->searchDirector($data[self::QUERY_PARAM], $data[self::PAGE_PARAM], self::FILMS_BY_PAGE);
+	    $viewData = $this->getFilmsViewData($films, $totalPages, $data[self::PAGE_PARAM], __FUNCTION__, $data);
+	    $viewData->setMainMenuLink($this->getMainMenuLink());
+	    $viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, 'searchDirector'));
+	    $viewData->setTitle("Peliculas encontradas para el directpr " . $data[self::QUERY_PARAM]);
+	    $view = new MenuView();
+	    $view->render($viewData);
     }
 
 	private function getMainMenuLink()
