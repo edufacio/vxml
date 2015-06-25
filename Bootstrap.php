@@ -5,13 +5,13 @@ define('GRAMMAR_CSV_PATH', GRAMMAR_PATH . "csv/" );
 
 Class Bootstrap
 {
-	const BOOTSTRAP_FILE = 'bootstrap.txt';
+	const BOOTSTRAP_FILE = '/bootstrap.txt';
 	private static $invalidPaths = array('.', '..');
 
 	public static function load()
 	{
 
-		$requirePaths = explode("\n", trim(file_get_contents(self::BOOTSTRAP_FILE)));
+		$requirePaths = explode("\n", trim(file_get_contents(BASE_PATH . self::BOOTSTRAP_FILE)));
 		foreach ($requirePaths as $requirePath) {
 			self::requirePath(dirname(__FILE__) . '/' . $requirePath);
 		}

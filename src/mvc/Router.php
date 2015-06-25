@@ -4,16 +4,12 @@ Class Router
 {
     public function request()
     {
-
-        $navigationMap = new NavigationMap();
+        $navigationMap = NavigationMap::create();
         $controllerName = $navigationMap->getControllerName();
         $action = $navigationMap->getAction();
         $data = $navigationMap->getData($controllerName, $action);
         $controllerClass = $controllerName . "Controller";
-        $controller = new $controllerClass();
+        $controller = Injector::get($controllerClass, $navigationMap);
         $controller->$action($data);
-
-
-
     }
 }

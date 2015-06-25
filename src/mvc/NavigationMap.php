@@ -50,7 +50,15 @@ Class NavigationMap
         ),
     );
 
-    public function getControllerName()
+	/**
+	 * @return NavigationMap
+	 */
+	public static function create()
+	{
+		return Injector::get('NavigationMap');
+	}
+
+	public function getControllerName()
     {
         if (isset($_GET[self::CONTROLLER_PARAM])
             && $this->isValidController($_GET[self::CONTROLLER_PARAM])
