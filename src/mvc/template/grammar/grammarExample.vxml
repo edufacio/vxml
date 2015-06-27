@@ -1,0 +1,34 @@
+
+
+<grammar xmlns="http://www.w3.org/2001/06/grammar"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://www.w3.org/2001/06/grammar 
+                             http://www.w3.org/TR/speech-grammar/grammar.xsd"
+         xml:lang="en-US" version="1.0">
+
+  <rule id="options">
+    <one-of>
+      <item xml:lang="en-US">Bruce Willis</item>
+      <item xml:lang="en-US">Willis</item>
+      <item xml:lang="en-US">Bruce</item>
+      <item xml:lang="en-US">Will Smith</item>
+      <item xml:lang="en-US">Smith</item>
+      <item xml:lang="en-US">Will</item>
+      <item xml:lang="es-ES">Jose Coronado</item>
+      <item xml:lang="es-ES">Jose</item>
+      <item xml:lang="es-ES">Coronado</item>
+      <item xml:lang="es-ES">Ana</item>
+      <item xml:lang="es-ES">Belen</item>
+    </one-of>
+  </rule>
+
+  <rule id="request" scope="public">
+    <example> may I speak with André Roy </example>
+    <example> may I speak with Jose </example>
+  
+    may I speak with
+    <one-of>
+      <item repeat="0-"> <ruleref uri="#options"/> </item>
+    </one-of>
+  </rule>
+</grammar>
