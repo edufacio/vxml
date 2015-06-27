@@ -51,6 +51,8 @@ Class IndexVxmlFilmController extends Controller {
 		}
 
 		if ($currentPageNumber > 0 && !empty($method)) {
+			$params[self::PAGE_PARAM] = 0;
+			$viewData->setFirstPageNumberLink($this->getLink(self::CONTROLLER_NAME, $method, $params));
 			$params[self::PAGE_PARAM] = $currentPageNumber - 1;
 			$viewData->setPreviousPageNumberLink($this->getLink(self::CONTROLLER_NAME, $method, $params));
 		}
@@ -58,13 +60,8 @@ Class IndexVxmlFilmController extends Controller {
 		if ($currentPageNumber < $totalPages && !empty($method)) {
 			$params[self::PAGE_PARAM] = $currentPageNumber + 1;
 			$viewData->setNextPageNumberLink($this->getLink(self::CONTROLLER_NAME, $method, $params));
-		}
-
-		if ($totalPages > 1) {
 			$params[self::PAGE_PARAM] = $totalPages;
 			$viewData->setLastPageNumberLink($this->getLink(self::CONTROLLER_NAME, $method, $params));
-			$params[self::PAGE_PARAM] = 0;
-			$viewData->setFirstPageNumberLink($this->getLink(self::CONTROLLER_NAME, $method, $params));
 		}
 
 		return $viewData;
@@ -150,7 +147,7 @@ Class IndexVxmlFilmController extends Controller {
 	    $viewData->setVarReturnedName(self::QUERY_PARAM);
 	    $viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'searchDirectorForm'));
 	    $viewData->setPrompt("Busqueda por director. Por favor diga el director a buscar");
-	    $viewData->addInputFromCsv(GRAMMAR_CSV_PATH . "/director.csv");
+	    $viewData->addInputFromCsv(GRAMMAR_CSV_PATH . "/directors.csv");
 	    $this->instantiateView('FormView')->render($viewData);
     }
 

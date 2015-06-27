@@ -1,7 +1,8 @@
 <?php
 Class NavigationMap
 {
-    const PARAMS = 'getParams';
+    const PARAMS = 'mandatoryParams';
+    const OPTIONAL_PARAMS = 'optionalParams';
     const POST_PARAMS = 'postParams';
     const DEFAULT_CONTROLLER = 'IndexVxmlFilm';
     const DEFAULT_ACTION = 'index';
@@ -43,9 +44,11 @@ Class NavigationMap
             ),
             "getFilm" => array(
                 self::PARAMS => array('filmId', 'breadCrumb'),
+	            self::OPTIONAL_PARAMS => array('breadCrumb'),
             ),
 	        "getFilmDetailed" => array(
 		        self::PARAMS => array('filmId', 'breadCrumb'),
+		        self::OPTIONAL_PARAMS => array('breadCrumb'),
 	        ),
         ),
     );
@@ -104,9 +107,9 @@ Class NavigationMap
     {
         $data = array();
 
-        $defaultParams = isset(self::$CONFIG[$controllerName][$action][self::DEFAULT_VALUE]) ?
-	        self::$CONFIG[$controllerName][$action][self::DEFAULT_VALUE] : array();
-        $validParams = self::$CONFIG[$controllerName][$action][self::PARAMS];
+        $defaultParams = $this->getConfigValue($controllerName, $action, self::DEFAULT_VALUE);
+        $optionalParams = $this->getConfigValue($controllerName, $action, self::OPTIONAL_PARAMS);
+        $validParams = $this->getConfigValue($controllerName, $action, self::PARAMS);
 
         foreach ($validParams as $paramName) {
 	        if (isset($_POST[$paramName])) {
@@ -115,13 +118,18 @@ Class NavigationMap
                 $data[$paramName] = $_GET[$paramName];
             } elseif(isset($defaultParams[$paramName])) {
 	            $data[$paramName] = $defaultParams[$paramName];
-            } else {
+            } elseif(!in_array($paramName, $optionalParams)) {
 		        throw new ParamNotFoundException($controllerName, $action, $paramName);
 	        }
         }
 
         return $data;
     }
+
+	private function getConfigValue($controllerName, $action, $entry) {
+		return isset(self::$CONFIG[$controllerName][$action][$entry]) ?
+			self::$CONFIG[$controllerName][$action][$entry] : array();
+	}
 }
 
 Class ParamNotFoundException extends InvalidArgumentException {

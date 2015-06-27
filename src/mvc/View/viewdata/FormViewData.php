@@ -113,7 +113,9 @@ class FormViewData extends SimpleViewData
 		if (!Language::isLanguageValid($language)) {
 			throw new InvalidLanguageException($language);
 		}
-		$this->inputs[$language . ':' . $input] = new FormInput($language, $input);
+		if (strlen($input) > 0) {
+			$this->inputs[$language . ':' . $input] = new FormInput($language, $input);
+		}
 	}
 
 	public function addInputFromCsv($csv) {

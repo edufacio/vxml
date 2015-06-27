@@ -80,7 +80,7 @@ Abstract class SimpleViewData
 	protected function getMainMenuOptionItem()
 	{
 		if ($this->existsMainMenuLink()) {
-			return '<item>' . $this->getMainMenuOption() . '</item>' . PHP_EOL;
+			return '<item>' . KeyPhone::toDigit($this->getMainMenuOption()) . '</item>' . PHP_EOL;
 		} else {
 			return '';
 		}
@@ -161,7 +161,7 @@ Abstract class SimpleViewData
 	protected function getPreviousPageOptionItem()
 	{
 		if ($this->existsMainMenuLink()) {
-			return '<item>' . $this->getPreviousPageOption() . '</item>' . PHP_EOL;
+			return '<item>' . KeyPhone::toDigit($this->getPreviousPageOption()) . '</item>' . PHP_EOL;
 		} else {
 			return '';
 		}

@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: econtreras
- * Date: 6/25/15
- * Time: 10:11 PM
- * To change this template use File | Settings | File Templates.
- */
 
 class Injector
 {
@@ -18,8 +11,7 @@ class Injector
 		} else {
 			$params = func_get_args();
 			array_shift($params);
-			$class = new ReflectionClass($className);
-			return $class->newInstanceArgs($params);
+			return self::createInstance($className, $params);
 		}
 	}
 
@@ -36,5 +28,15 @@ class Injector
 	private function getBinding($className)
 	{
 		return self::$bindings[$className];
+	}
+
+	private function createInstance($className, array $params)
+	{
+		if (empty($params)) {
+			return new $className();
+		} else {
+			$class = new ReflectionClass($className);
+			return $class->newInstanceArgs($params);
+		}
 	}
 }
