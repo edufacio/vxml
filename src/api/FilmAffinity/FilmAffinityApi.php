@@ -10,10 +10,13 @@ class FilmAffinityApi
 	const FILM_QUERY = '/es/film%id%.html';
 	private static $instance;
 
+	/**
+	 * @return FilmAffinityApi
+	 */
 	public static function getInstance()
 	{
 		if (self::$instance == null) {
-			self::$instance = new FilmAffinityApi();
+			self::$instance = Injector::get('FilmAffinityApi');
 		}
 		return self::$instance;
 	}

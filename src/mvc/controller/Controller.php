@@ -20,14 +20,6 @@ Abstract Class Controller {
         return Link::createFromHref($url);
     }
 
-    /**
-     * @param $view
-     * @return View
-     */
-    protected function instantiateView($view) {
-        return new $view();
-    }
-
     private function assertLinkIsValid($controllerName, $action, $params) {
 	    if (!$this->navigation->isValidAction($controllerName, $action)) {
 		    throw new DomainException("$controllerName with $action is not configured in NavigationMap yet");
@@ -35,7 +27,7 @@ Abstract Class Controller {
 
 	    $validParams = array();
         foreach ($params as $paramName => $paramValue) {
-	        if ($this->navigation->isValidAction($controllerName, $action, $paramName)) {
+	        if ($this->navigation->isValidParam($controllerName, $action, $paramName)) {
 		        $validParams[$paramName] = $paramValue;
 	        }
         }

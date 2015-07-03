@@ -5,6 +5,14 @@ class MenuViewData extends SimpleViewData
     protected $options = array();
     private $defaultOption = null;
 
+	/**
+	 * @return MenuViewData
+	 */
+	public static function create()
+	{
+		return Injector::get('MenuViewData');
+	}
+
 	public function setTitle($title)
 	{
 		$this->title = $title;

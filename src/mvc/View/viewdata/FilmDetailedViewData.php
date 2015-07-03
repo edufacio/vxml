@@ -2,6 +2,13 @@
 class FilmDetailedViewData extends MenuViewData
 {
 
+	/**
+	 * @return FilmDetailedViewData
+	 */
+	public static function create() {
+		return Injector::get('FilmDetailedViewData');
+	}
+
 	public function setFilm(Film $film)
 	{
 		$rating = $film->hasRating() ? "Puntuacion: " . $film->getRating() . "sobre 10 de " . $film->getRateCount() . " votos" . $this->getWeakBreak() : '';

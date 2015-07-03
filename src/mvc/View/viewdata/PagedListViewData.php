@@ -11,6 +11,14 @@ class PagedListViewData extends MenuViewData
 	private $titleList;
 	private $paginationOptions = array();
 
+	/**
+	 * @return PagedListViewData
+	 */
+	public static function create()
+	{
+		return Injector::get('PagedListViewData');
+	}
+
 	public function setTitleList($titleList)
 	{
 		$this->titleList = $titleList;

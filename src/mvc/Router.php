@@ -8,7 +8,7 @@ Class Router
         $controllerName = $navigationMap->getControllerName();
         $action = $navigationMap->getAction();
         $data = $navigationMap->getData($controllerName, $action);
-        $controllerClass = $controllerName . "Controller";
+        $controllerClass = $controllerName . "CONTROLLER";
         $controller = Injector::get($controllerClass, $navigationMap);
         $controller->$action($data);
     }

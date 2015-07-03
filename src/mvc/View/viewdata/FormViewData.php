@@ -9,6 +9,13 @@ class FormViewData extends SimpleViewData
 	private $varReturnedName;
 	private $externalGrammarPath;
 
+	/**
+	 * @return FormViewData
+	 */
+	public static function create() {
+		return Injector::get('FormViewData');
+	}
+
 	function getGrammar()
 	{
 		if ($this->getExternalGrammarPath() !== null) {

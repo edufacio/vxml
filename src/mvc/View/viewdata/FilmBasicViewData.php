@@ -1,6 +1,13 @@
 <?php
 class FilmBasicViewData extends MenuViewData
 {
+	/**
+	 * @return FilmBasicViewData
+	 */
+	public static function create() {
+		return Injector::get('FilmBasicViewData');
+	}
+
 	public function setFilm(Film $film, Link $filmDetails)
 	{
 		$this->addOption("Detalles de pelicula", "más detalles", $filmDetails);

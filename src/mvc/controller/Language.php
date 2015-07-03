@@ -1,7 +1,8 @@
 <?php
-class Language {
-    const esES = 'es-ES';
-    const enUS = 'en-US';
+class Language
+{
+	const esES = 'es-ES';
+	const enUS = 'en-US';
 
 	private static $availableLanguages = array(
 		self::esES => self::esES,
@@ -14,7 +15,8 @@ class Language {
 	}
 }
 
-Class InvalidLanguageException extends InvalidArgumentException {
+Class InvalidLanguageException extends InvalidArgumentException
+{
 
 	function __construct($language)
 	{

@@ -22,7 +22,7 @@ Class Bootstrap
 		if (is_dir($requirePath)) {
 			$requirePathChilds = scandir($requirePath);
 			foreach ($requirePathChilds as $requirePathChild) {
-				if (!in_array(basename($requirePath), self::$invalidPaths)) {
+				if (!in_array(basename($requirePathChild), self::$invalidPaths)) {
 					self::requirePath($requirePath . "/" . $requirePathChild);
 				}
 			}

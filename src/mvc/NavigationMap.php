@@ -61,6 +61,10 @@ Class NavigationMap
 		return Injector::get('NavigationMap');
 	}
 
+	/**
+	 * Return CONTROLLER Name from Get Params
+	 * @return string
+	 */
 	public function getControllerName()
     {
         if (isset($_GET[self::CONTROLLER_PARAM])
@@ -71,7 +75,15 @@ Class NavigationMap
         return self::DEFAULT_CONTROLLER;
     }
 
-    public function isValidParam($controller, $action, $paramName)
+	/**
+	 * Check If a param for a controller and for action is valid
+	 * @param $controller
+	 * @param $action
+	 * @param $paramName
+	 *
+	 * @return bool
+	 */
+	public function isValidParam($controller, $action, $paramName)
     {
         if ($this->isValidAction($controller, $action)) {
             return in_array($paramName, self::$CONFIG[$controller][$action][self::PARAMS]);
@@ -79,12 +91,25 @@ Class NavigationMap
         return false;
     }
 
-    public function isValidController($controllerName)
+	/**
+	 * Check if a controller is valid
+	 * @param $controllerName
+	 *
+	 * @return bool
+	 */
+	public function isValidController($controllerName)
     {
         return isset(self::$CONFIG[$controllerName]);
     }
 
-    public function isValidAction($controllerName, $action)
+	/**
+	 * Check if an action is valid
+	 * @param $controllerName
+	 * @param $action
+	 *
+	 * @return bool
+	 */
+	public function isValidAction($controllerName, $action)
     {
 
         if ($this->isValidController($controllerName)) {
@@ -93,7 +118,11 @@ Class NavigationMap
         return false;
     }
 
-    public function getAction()
+	/**
+	 * Returns the action  from  the request
+	 * @return string
+	 */
+	public function getAction()
     {
         if (isset($_GET[self::ACTION_PARAM]) && isset($_GET[self::CONTROLLER_PARAM])
             && $this->isValidAction($_GET[self::CONTROLLER_PARAM], $_GET[self::ACTION_PARAM])
@@ -103,7 +132,15 @@ Class NavigationMap
         return self::DEFAULT_ACTION;
     }
 
-    public function getData($controllerName, $action)
+	/**
+	 * Returns the action  from  the request
+	 * @param $controllerName
+	 * @param $action
+	 *
+	 * @return array
+	 * @throws ParamNotFoundException
+	 */
+	public function getData($controllerName, $action)
     {
         $data = array();
 

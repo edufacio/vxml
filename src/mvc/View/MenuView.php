@@ -1,6 +1,14 @@
 <?php
 class MenuView extends View
 {
+	/**
+	 * @return MenuView
+	 */
+	public static function create()
+	{
+		return Injector::get('MenuView');
+	}
+
 	public function render($viewData)
 	{
 		$this->assertDataIsValid($viewData);

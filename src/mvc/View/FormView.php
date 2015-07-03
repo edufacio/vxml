@@ -1,6 +1,14 @@
 <?php
 class FormView extends View
 {
+	/**
+	 * @return FormView
+	 */
+	public static function create()
+	{
+		return Injector::get('FormView');
+	}
+
 	public function render($viewData)
 	{
 		$this->assertDataIsValid($viewData);
