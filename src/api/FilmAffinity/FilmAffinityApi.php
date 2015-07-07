@@ -2,11 +2,11 @@
 
 class FilmAffinityApi
 {
-	const BASE_URL = "http://www.filmaffinity.com/";
-	const ACTOR_QUERY = "es/search.php?stype=cast&stext=";
-	const TITLE_QUERY = "es/search.php?stype=title&stext=";
-	const DIRECTOR_QUERY = "es/search.php?stype=director&stext=";
-	const CARTELERA_QUERY = "/es/cat_new_th_es.html";
+	const BASE_URL = 'http://www.filmaffinity.com/';
+	const ACTOR_QUERY = 'es/search.php?stype=cast&stext=';
+	const TITLE_QUERY = 'es/search.php?stype=title&stext=';
+	const DIRECTOR_QUERY = 'es/search.php?stype=director&stext=';
+	const CARTELERA_QUERY = '/es/cat_new_th_es.html';
 	const FILM_QUERY = '/es/film%id%.html';
 	private static $instance;
 
@@ -109,14 +109,18 @@ class FilmAffinityApi
 	 *
 	 * @return simple_html_dom
 	 */
-	public function request($page)
+	private function request($page)
 	{
-		$c = curl_init(self::BASE_URL . $page);
-		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-		$html = curl_exec($c);
+		$html = $this->curl($page);
 		$dom = New simple_html_dom();
 		$dom->load($html);
 		return $dom;
+	}
+
+	public function curl($page) {
+		$c = curl_init(self::BASE_URL . $page);
+		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+		return curl_exec($c);
 	}
 
 	private function getFilmId($href)

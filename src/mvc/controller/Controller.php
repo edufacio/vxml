@@ -11,7 +11,7 @@ Abstract Class Controller {
 
     abstract public function index($data);
 
-    public function getLink($controllerName, $action, $params = array()) {
+    protected function getLink($controllerName, $action, $params = array()) {
         $validParams = $this->assertLinkIsValid($controllerName, $action, $params);
 
         $url = self::BASE_URL . $this->getUrlParam(NavigationMap::CONTROLLER_PARAM, $controllerName)
