@@ -8,5 +8,26 @@
  */
 
 class DbConfig {
+	const HOST = 'host';
+	const USER = 'user';
+	const PASSWD = 'passwd';
+	const DB_NAME = 'dbName';
 
+	/**
+	 * @return DbConfig
+	 */
+	public static function create()
+	{
+		return Injector::get('DbConfig');
+	}
+
+	public function getDbConfig() {
+		return array(
+			//self::HOST => 'mysql7.000webhost.com',
+			self::HOST => '127.0.0.1',
+			self::USER => 'a6081555_user',
+			self::DB_NAME => 'a6081555_db',
+			self::PASSWD => 'vxmlPFC6',
+		);
+	}
 }

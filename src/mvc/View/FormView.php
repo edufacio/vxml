@@ -22,8 +22,8 @@ class FormView extends View
 	 */
 	private function assertDataIsValid($viewData)
 	{
-		if(count($viewData->getInputs()) == 0 && $viewData->getExternalGrammarPath() == null
-			&& !$viewData->existsMainMenuLink() && !$viewData->existsPreviousPageLink()) {
+		if(count($viewData->getVoiceInputs()) == 0 && $viewData->getExternalGrammarPath() == null
+			&& !$viewData->existsMainMenuLink() && !$viewData->existsPreviousPageLink() && $viewData->getNumericInputLength() == 0) {
 			throw new InvalidArgumentException("No options or inputs");
 		}
 

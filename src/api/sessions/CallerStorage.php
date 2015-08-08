@@ -1,18 +1,16 @@
 <?php
 
-class UserStorage extends DbStorage{
+class CallerStorage extends DbStorage{
 	const PHONE = 'phone';
-	const PASSWORD = 'password';
-	const PROVINCE_ID = 'province_id';
-	const START_SCHEDULE = 'start_favourite_schedule';
-	const END_SCHEDULE = 'end_favourite_schedule';
-	const REGISTER_STATUS = 'register_status';
-	const REGISTER_TIME = 'register_time';
+	const CALLER_ID = 'caller_id';
+	const FIRST_LOGIN_TIME = 'first_login_time';
+	const LAST_LOGIN_TIME = 'last_login_time';
+	const REMEMBER = 'remember_flag';
 
 	private static $instance;
 
 	/**
-	 * @return UserStorage
+	 * @return CallerStorage
 	 */
 	public static function getInstance() {
 		if (self::$instance === NULL) {
@@ -20,7 +18,6 @@ class UserStorage extends DbStorage{
 		}
 		return self::$instance;
 	}
-
 	/**
 	 * @return array with the columns of the table
 	 */
@@ -28,12 +25,10 @@ class UserStorage extends DbStorage{
 	{
 		return array(
 			self::PHONE,
-			self::PASSWORD,
-			self::PROVINCE_ID,
-			self::START_SCHEDULE,
-			self::END_SCHEDULE,
-			self::REGISTER_STATUS,
-			self::REGISTER_TIME,
+			self::CALLER_ID,
+			self::FIRST_LOGIN_TIME,
+			self::LAST_LOGIN_TIME,
+			self::REMEMBER
 		);
 	}
 
@@ -42,7 +37,7 @@ class UserStorage extends DbStorage{
 	 */
 	protected function getStorageObjectClass()
 	{
-		return 'User';
+		return 'Caller';
 	}
 
 	/**
@@ -50,7 +45,7 @@ class UserStorage extends DbStorage{
 	 */
 	protected function getTableName()
 	{
-		return 'users';
+		return 'callers';
 	}
 
 	/**
@@ -58,6 +53,6 @@ class UserStorage extends DbStorage{
 	 */
 	protected function getPrimaryKeyColumns()
 	{
-		return array(self::PHONE);
+		return array(self::CALLER_ID);
 	}
 }

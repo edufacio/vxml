@@ -1,20 +1,23 @@
 <?='<?xml version="1.0" encoding="UTF-8"?>' /* @var $viewData FormViewData*/  ?>
 <vxml version="2.1" xml:lang="<?= $viewData->getLanguage()?>">
+	<?foreach($viewData->getHiddenParams() as $hiddenParamName => $value) {?>
+		<var name="<?=$hiddenParamName?>" expr="'<?=$value?>'"/>
+	<?}?>
 	<form id="MainMenu">
+		<meta name="maintainer" content="your_email_address@wherever.com" />
 		<field name="<?=$viewData->getVarReturnedName()?>">
-			<prompt>
+			<?= $viewData->getGrammar(); ?>
+
+			<prompt bargeintype="hotword">
 				<?=$viewData->getPrompt(); ?>
 				<? if ($viewData->existsPreviousPageLink()) { ?>
 					<?= $viewData->getPreviousPagePrompt(); ?>
 				<? } ?>
 
 				<? if ($viewData->existsMainMenuLink()) { ?>
-					<?= $viewData->getMainMenuPrompt()
-					; ?>
+					<?= $viewData->getMainMenuPrompt(); ?>
 				<? } ?>
 			</prompt>
-
-			<?= $viewData->getGrammar(); ?>
 
 			<noinput>
 				Lo siento, no he entendido lo que ha dicho. Por favor intentelo de nuevo.
@@ -28,22 +31,22 @@
 
 		</field>
 
-		<filled>
+		<filled mode="all">
 				<?if ($viewData->existsMainMenuLink()) { ?>
 					<if cond="<?=$viewData->getVarReturnedName()?> == <?=KeyPhone::toDigit($viewData->getMainMenuOption()) ?>">
 						<prompt>Has elegido Volver al menú principal.</prompt>
-						<submit next="<?= $viewData->getMainMenuLink()->getHrefForRender() ?>"   />
+						<submit next="<?= $viewData->getMainMenuLink()->getHrefForRender() ?>" method="post" namelist="<?=$viewData->getNameList()?>" />
 					</if>
 				<?}?>
 				<?if ($viewData->existsPreviousPageLink()) { ?>
 					<if cond="<?=$viewData->getVarReturnedName()?> == '<?=KeyPhone::toDigit($viewData->getPreviousPageOption()) ?>'">
 						<prompt>Has elegido volver a la página anterior ?> </prompt>
-						<submit next="<?= $viewData->getPreviousPageLink()->getHrefForRender() ?>" />
+						<submit next="<?= $viewData->getPreviousPageLink()->getHrefForRender() ?>" method="post" namelist="<?=$viewData->getNameList()?>" />
 					</if>
 				<?}?>
 
 				<prompt>Has dicho <value expr="<?=$viewData->getVarReturnedName()?>"/></prompt>
-				<submit next="<?=$viewData->getSubmitLink()->getHrefForRender()?>" method="post" namelist="<?=$viewData->getVarReturnedName()?>" />
+				<submit next="<?=$viewData->getSubmitLink()->getHrefForRender()?>" method="post" namelist="<?=$viewData->getNameList()?>" />
 		</filled>
 	</form>
 </vxml>

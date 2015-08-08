@@ -104,9 +104,11 @@ Class IndexVxmlFilmController extends Controller {
 	    $viewData->setVarReturnedName(self::QUERY_PARAM);
 	    $viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'searchTitleForm'));
 	    $viewData->setPrompt("Busqueda por titulo. por favor diga el titulo a buscar");
-	    $viewData->addInput(Language::esES, "La jungla de cristal", true);
-	    $viewData->addInput(Language::esES, "matar a un ruiseñor", true);
-	    $viewData->addInput(Language::enUS, "love story", true);
+	    $viewData->addVoiceInput(Language::esES, "La jungla de cristal", true);
+	    $viewData->addVoiceInput(Language::esES, "matar a un ruiseñor", true);
+	    $viewData->addVoiceInput(Language::esES, "la isla minima", true);
+	    $viewData->addVoiceInput(Language::enUS, "love story", true);
+	    $viewData->addVoiceInput(Language::enUS, "toy story", true);
 	    FormView::create()->render($viewData);
     }
 

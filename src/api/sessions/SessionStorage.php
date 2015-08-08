@@ -1,18 +1,15 @@
 <?php
 
-class UserStorage extends DbStorage{
+class SessionStorage extends DbStorage{
 	const PHONE = 'phone';
-	const PASSWORD = 'password';
-	const PROVINCE_ID = 'province_id';
-	const START_SCHEDULE = 'start_favourite_schedule';
-	const END_SCHEDULE = 'end_favourite_schedule';
-	const REGISTER_STATUS = 'register_status';
-	const REGISTER_TIME = 'register_time';
+	const SESSION_ID = 'session_id';
+	const SESSION_STATUS = 'status_session';
+	const SESSION_TIME = 'session_time';
 
 	private static $instance;
 
 	/**
-	 * @return UserStorage
+	 * @return SessionStorage
 	 */
 	public static function getInstance() {
 		if (self::$instance === NULL) {
@@ -28,12 +25,9 @@ class UserStorage extends DbStorage{
 	{
 		return array(
 			self::PHONE,
-			self::PASSWORD,
-			self::PROVINCE_ID,
-			self::START_SCHEDULE,
-			self::END_SCHEDULE,
-			self::REGISTER_STATUS,
-			self::REGISTER_TIME,
+			self::SESSION_ID,
+			self::SESSION_STATUS,
+			self::SESSION_TIME,
 		);
 	}
 
@@ -42,7 +36,7 @@ class UserStorage extends DbStorage{
 	 */
 	protected function getStorageObjectClass()
 	{
-		return 'User';
+		return 'Session';
 	}
 
 	/**
@@ -50,7 +44,7 @@ class UserStorage extends DbStorage{
 	 */
 	protected function getTableName()
 	{
-		return 'users';
+		return 'sessions';
 	}
 
 	/**
@@ -58,6 +52,6 @@ class UserStorage extends DbStorage{
 	 */
 	protected function getPrimaryKeyColumns()
 	{
-		return array(self::PHONE);
+		return array(self::SESSION_ID);
 	}
 }

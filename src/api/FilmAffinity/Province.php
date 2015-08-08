@@ -2,14 +2,12 @@
 
 class Province
 {
-	static private $cities = array(
-		"ES-M" => "Madrid",
-		"ES-B" => "Barcelona",
+	static private $provinces = array(
 		"ES-C" => "A Coruña",
 		"ES-AB" => "Albacete",
-		"ES-A" => "Alicante/Alacant",
+		"ES-A" => "Alicante",
 		"ES-AL" => "Almería",
-		"ES-VI" => "Araba/Álava",
+		"ES-VI" => "Álava",
 		"ES-O" => "Asturias",
 		"ES-AV" => "Ávila",
 		"ES-BA" => "Badajoz",
@@ -19,18 +17,18 @@ class Province
 		"ES-CC" => "Cáceres",
 		"ES-CA" => "Cádiz",
 		"ES-S" => "Cantabria",
-		"ES-CS" => "Castellón/Castelló",
+		"ES-CS" => "Castellón",
 		"ES-CE" => "Ceuta",
 		"ES-CR" => "Ciudad Real",
 		"ES-CO" => "Córdoba",
 		"ES-CU" => "Cuenca",
-		"ES-SS" => "Gipuzkoa",
+		"ES-SS" => "Gipuzcoa",
 		"ES-GI" => "Girona",
 		"ES-GR" => "Granada",
 		"ES-GU" => "Guadalajara",
 		"ES-H" => "Huelva",
 		"ES-HU" => "Huesca",
-		"ES-PM" => "Illes Balears",
+		"ES-PM" => "Balears",
 		"ES-J" => "Jaén",
 		"ES-LO" => "La Rioja",
 		"ES-GC" => "Las Palmas",
@@ -42,7 +40,7 @@ class Province
 		"ES-ML" => "Melilla",
 		"ES-MU" => "Murcia",
 		"ES-NA" => "Navarra",
-		"ES-OR" => "Ourense",
+		"ES-OR" => "Orense",
 		"ES-P" => "Palencia",
 		"ES-PO" => "Pontevedra",
 		"ES-SA" => "Salamanca",
@@ -53,32 +51,47 @@ class Province
 		"ES-T" => "Tarragona",
 		"ES-TE" => "Teruel",
 		"ES-TO" => "Toledo",
-		"ES-V" => "Valencia/València",
+		"ES-V" => "Valencia",
 		"ES-VA" => "Valladolid",
 		"ES-ZA" => "Zamora",
 		"ES-Z" => "Zaragoza",
 	);
 
-	public static function getCityName($city)
+	public static function getProvinceName($provinceId)
 	{
-		if (isset($city)) {
-			return self::$cinemas[$city];
+		if (isset(self::$provinces[$provinceId])) {
+			return self::$provinces[$provinceId];
 		}
+		throw new InvalidProvinceIdException($provinceId);
 	}
 
-	public static function getCityId($city)
+	public static function getAllProvinces()
 	{
-		if (isset($city)) {
+		return self::$provinces;
+	}
+	public static function getProvinceId($province)
+	{
+		if (in_array($province, self::$provinces)) {
 			return self::$cinemas[$city];
 		}
+		throw new InvalidProvinceIdException($province);
 	}
 }
 
-Class InvalidCinemaIdException extends InvalidArgumentException
+Class InvalidProvinceIdException extends InvalidArgumentException
 {
 
-	function __construct($cinemaId)
+	function __construct($provinceId)
 	{
-		parent::__construct("");
+		parent::__construct("Unknown PROVINCE_ID $provinceId");
+	}
+}
+
+Class InvalidProvinceException extends InvalidArgumentException
+{
+
+	function __construct($province)
+	{
+		parent::__construct("Unknown Province $province");
 	}
 }

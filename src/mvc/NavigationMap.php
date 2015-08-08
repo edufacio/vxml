@@ -10,6 +10,9 @@ Class NavigationMap
     const ACTION_PARAM = 'a';
     const URI = 'REQUEST_URI';
 	const DEFAULT_VALUE = 'default value';
+	const SESSION_PARAM = 'session_sessionid';
+	const CALLER_PARAM = 'session_callerid';
+	const DEFAULT_CALLER = "default_caller";
 
 
 	private static $CONFIG = array(
@@ -160,12 +163,39 @@ Class NavigationMap
 	        }
         }
 
+	    foreach($_POST as $paramName => $value) {
+		     if(!isset($data[$paramName])) {
+			     $data[$paramName] = $value;
+		     }
+	    }
+
+		SessionsBackend::getInstance()->inizializateSession($this->getSession(), $this->getCaller());
+	    mail("edufacio@gmail.com", "info", var_export(array("post" => $_POST, "get" => $_GET, "req" => $_REQUEST, "sessipn" => CurrentSession::getInstance()), true));
+
         return $data;
     }
 
 	private function getConfigValue($controllerName, $action, $entry) {
 		return isset(self::$CONFIG[$controllerName][$action][$entry]) ?
 			self::$CONFIG[$controllerName][$action][$entry] : array();
+	}
+
+	private function getSession()
+	{
+		if (isset($_REQUEST[self::SESSION_PARAM])) {
+			return $_REQUEST[self::SESSION_PARAM];
+		} else {
+			return time() . "@" . rand(0, 10000000);
+		}
+	}
+
+	private function getCaller()
+	{
+		if (isset($_REQUEST[self::CALLER_PARAM])) {
+			return $_REQUEST[self::CALLER_PARAM];
+		} else {
+			return self::DEFAULT_CALLER;
+		}
 	}
 }
 

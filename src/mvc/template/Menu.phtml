@@ -1,12 +1,18 @@
 <?='<?xml version="1.0" encoding="UTF-8"?>' /* @var $viewData MenuViewData*/  ?>
 <vxml version="2.1" xml:lang="<?=$viewData->getLanguage()?>">
+
+	<?foreach($viewData->getHiddenParams() as $hiddenParamName => $value) {?>
+		<var name="<?=$hiddenParamName?>" expr="'<?=$value?>'"/>
+	<?}?>
+
 	<form id="MainMenu">
+
 		<field name="menuOption">
-			<prompt>
+			<prompt bargeintype="hotword">
 
 				<?= $viewData->getTitle()?> <break/>
 			</prompt>
-			<prompt>
+			<prompt bargeintype="hotword">
 				<?=$viewData->getPrompt(); ?>
 				<? if ($viewData->existsPreviousPageLink()) { ?>
 					<?= $viewData->getPreviousPagePrompt() ?>
@@ -37,14 +43,14 @@
 				<?if ($viewData->existsMainMenuLink()) { ?>
 					<if cond="menuOption == <?=KeyPhone::toDigit($viewData->getMainMenuOption()) ?>">
 						<prompt>Has elegido Volver al menú principal.</prompt>
-						<submit next="<?= $viewData->getMainMenuLink()->getHrefForRender() ?>"   />
+						<submit next="<?= $viewData->getMainMenuLink()->getHrefForRender()?>" method="post" namelist="<?=$viewData->getNameList()?>" />
 
 					</if>
 				<?}?>
 				<?if ($viewData->existsPreviousPageLink()) { ?>
 					<if cond="menuOption == '<?=KeyPhone::toDigit($viewData->getPreviousPageOption()) ?>'">
 						<prompt>Has elegido volver a la página anterior ?> </prompt>
-						<submit next="<?= $viewData->getPreviousPageLink()->getHrefForRender() ?>" />
+						<submit next="<?= $viewData->getPreviousPageLink()->getHrefForRender() ?>" method="post" namelist="<?=$viewData->getNameList()?>" />
 					</if>
 				<?}?>
 
@@ -58,15 +64,15 @@
 
 					<if cond="<?= $firstOption->getEqualCondition("menuOption") ?>">
 						<prompt>Has elegido <?=$firstOption->getInfoOption()?> </prompt>
-						<submit next="<?= $firstOption->getLink()->getHrefForRender() ?>"  />
+						<submit next="<?= $firstOption->getLink()->getHrefForRender() ?>" method="post" namelist="<?=$viewData->getNameList()?>" />
 						<? foreach ($options as $option) { ?>
 							<elseif cond="<?= $option->getEqualCondition("menuOption") ?>"/>
 								<prompt>Has elegido <?=$option->getInfoOption()?> </prompt>
-								<submit next="<?= $option->getLink()->getHrefForRender() ?>"  />
+								<submit next="<?= $option->getLink()->getHrefForRender() ?>" method="post" namelist="<?=$viewData->getNameList()?>" />
 						<? } ?>
 						<? if ($viewData->existsDefaultOption()) { ?>
 							<else/>
-							<submit next="<? $viewData->getDefaultOption()->getHrefForRender() ?>"  method="post"  />
+							<submit next="<? $viewData->getDefaultOption()->getHrefForRender() ?>" method="post" namelist="variable1 variable2"   />
 						<? } ?>
 					</if>
 				<? } ?>

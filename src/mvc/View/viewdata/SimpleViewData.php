@@ -6,6 +6,15 @@ Abstract class SimpleViewData
 	private $language = Language::esES;
 	private $previousPageLink;
 	private $mainMenuLink;
+	private $hiddenParams = array();
+
+	function __construct()
+	{
+		$currentSession = CurrentSession::getInstance();
+		$this->hiddenParams[NavigationMap::SESSION_PARAM] = $currentSession->getSession();
+		$this->hiddenParams[NavigationMap::CALLER_PARAM] = $currentSession->getCallerId();
+	}
+
 
 	abstract function getGrammar();
 
@@ -145,6 +154,17 @@ Abstract class SimpleViewData
 		return $this->language;
 	}
 
+	public function addHiddenParam($paramName, $value) {
+		$this->hiddenParams[$paramName] = $value;
+	}
+
+	public function getHiddenParams() {
+		return $this->hiddenParams;
+	}
+
+	public function getNameList() {
+		return implode(' ', array_keys($this->hiddenParams));
+	}
 
 	/**
 	 * @return String

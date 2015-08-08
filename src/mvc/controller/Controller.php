@@ -1,7 +1,8 @@
 <?php
 Abstract Class Controller {
-    const BASE_URL = "index.php?";
-
+    const BASE_URL = 'index.php?';
+	const SESSION = 'session';
+	const CALLER_ID = 'caller_id';
     private $navigation;
 
     function __construct(NavigationMap $navigationMap)

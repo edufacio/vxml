@@ -1,5 +1,4 @@
 <?
-
 class FilmAffinityApi
 {
 	const BASE_URL = 'http://www.filmaffinity.com/';
@@ -138,7 +137,14 @@ class FilmAffinityApi
 		}
 		$pageDom = $this->request($query);
 		$films = $pageDom->find('div[class=mc-title] a');
-		$totalFilmsTitle = reset($pageDom->find('div[class=sub-header-search]'))->text();
+		$totalFilmsDom = reset($pageDom->find('div[class=sub-header-search]'));
+		if ($totalFilmsDom == false ) {
+			return array(0, array());
+		}
+
+
+		$totalFilmsTitle = $totalFilmsDom->text();
+
 		$totalFilms = filter_var($totalFilmsTitle, FILTER_SANITIZE_NUMBER_INT);
 		$totalPages = floor($totalFilms / $filmsPerPage);
 		$filmsPaged = array_slice($films, 0, $filmsPerPage);

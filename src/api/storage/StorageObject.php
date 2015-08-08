@@ -7,6 +7,40 @@
  * To change this template use File | Settings | File Templates.
  */
 
-class StorageObject {
+abstract class StorageObject {
+	protected  $rawRecord;
 
+	function __construct($rawRecord)
+	{
+		$this->rawRecord = $rawRecord;
+	}
+
+	public static function createFromRecord($rawRecord) {
+		throw new Exception('Not Implemented');
+	}
+
+	public static function create() {
+		throw new Exception('Not Implemented');
+	}
+
+	public function  getRawRecord() {
+		return $this->rawRecord;
+	}
+
+	protected function get($column, $default = null) {
+		if ($this->exist($column)) {
+			return $this->rawRecord[$column];
+		} else {
+			return $default;
+		}
+	}
+
+	protected function set($column, $value) {
+		$this->rawRecord[$column] = $value;
+		return $this;
+	}
+
+	protected function exist($column) {
+		return isset($this->rawRecord[$column]);
+	}
 }
