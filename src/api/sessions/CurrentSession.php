@@ -67,7 +67,7 @@ class CurrentSession
 
 	public function isLogged()
 	{
-		return $this->currentPhone !== null && $this->status == SessionStatus::LOGED;
+		return $this->currentPhone !== null && $this->status == SessionStatus::LOGGED;
 	}
 
 	public function isRegistering()

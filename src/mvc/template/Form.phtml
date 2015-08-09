@@ -4,7 +4,6 @@
 		<var name="<?=$hiddenParamName?>" expr="'<?=$value?>'"/>
 	<?}?>
 	<form id="MainMenu">
-		<meta name="maintainer" content="your_email_address@wherever.com" />
 		<field name="<?=$viewData->getVarReturnedName()?>">
 			<?= $viewData->getGrammar(); ?>
 
@@ -44,8 +43,9 @@
 						<submit next="<?= $viewData->getPreviousPageLink()->getHrefForRender() ?>" method="post" namelist="<?=$viewData->getNameList()?>" />
 					</if>
 				<?}?>
-
-				<prompt>Has dicho <value expr="<?=$viewData->getVarReturnedName()?>"/></prompt>
+				<?if (!$viewData->isHiddenOption()) { ?>
+					<prompt>Has dicho <value expr="<?=$viewData->getVarReturnedName()?>"/></prompt>
+				<?}?>
 				<submit next="<?=$viewData->getSubmitLink()->getHrefForRender()?>" method="post" namelist="<?=$viewData->getNameList()?>" />
 		</filled>
 	</form>

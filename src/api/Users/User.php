@@ -47,6 +47,11 @@ class User extends StorageObject
 		return $this->get(UserStorage::END_SCHEDULE);
 	}
 
+	/**
+	 * @param $password
+	 *
+	 * @return $this
+	 */
 	public function setPassword($password)
 	{
 		return $this->set(UserStorage::PASSWORD, $password);
@@ -94,6 +99,12 @@ class User extends StorageObject
 
 
 	}
+
+	/**
+	 * @param $registerTime
+	 *
+	 * @return $this
+	 */
 	public function setRegisterTime($registerTime)
 	{
 		return $this->set(UserStorage::REGISTER_TIME, $registerTime);

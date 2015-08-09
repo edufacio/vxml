@@ -6,26 +6,73 @@ Class IndexVxmlFilmController extends Controller {
 	const FILMS_BY_PAGE = 9;
     const FILM_ID = 'filmId';
 	const BREADCRUMBS = "breadCrumb";
-    public function index($data)
-    {
-        $viewData = MenuViewData::create();
-        $viewData->addOption("busqueda por titulo", "busqueda por titulo", $this->getLink(self::CONTROLLER_NAME, "searchTitle"));
-        $viewData->addOption("busqueda por titulo", KeyPhone::KEY_1, $this->getLink(self::CONTROLLER_NAME, "searchTitle"));
-        $viewData->addOption("busqueda por actor", "busqueda por actor", $this->getLink(self::CONTROLLER_NAME, "searchActor"));
-        $viewData->addOption("busqueda por actor", KeyPhone::KEY_2, $this->getLink(self::CONTROLLER_NAME, "searchActor"));
-        $viewData->addOption("busqueda por director", "busqueda por director", $this->getLink(self::CONTROLLER_NAME, "searchDirector"));
-        $viewData->addOption("busqueda por director", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "searchDirector"));
-        $viewData->addOption("ver cartelera", "ver cartelera", $this->getLink(self::CONTROLLER_NAME, "getCartelera"));
-        $viewData->addOption("ver cartelera", KeyPhone::KEY_4, $this->getLink(self::CONTROLLER_NAME, "getCartelera"));
-	    $viewData->setPrompt(" Bienvenido al sistema de informacion de peliculas por telefono."
-		    . " Para buscar una película por título pulse 1 o diga búsqueda por título."
-		    . " Para buscar una película por actor pulse 2 o diga búsqueda por actor."
-		    . " Para buscar una pelicula por director pulse 3 o diga búsqueda por director. "
-		    . " Para oir la cartelera pulse 4 o diga ver cartelera o diga cartelera.");
 
-	    $view = MenuView::create();
-	    $view->render($viewData);
+	/**
+	 * @return IndexVxmlFilmController
+	 */
+	public static function create($navigation) {
+		return Injector::get('IndexVxmlFilmController', $navigation);
+	}
+
+    public function index($data, $preprompt = '')
+    {
+	    if (CurrentSession::getInstance()->isLogged()) {
+		   $this->loggedMainMenu($data, $preprompt);
+	    } else {
+		   $this->unloggedMainMenu($data, $preprompt);
+	    }
     }
+
+	private function loggedMainMenu($data, $preprompt = '') {
+		$viewData = MenuViewData::create();
+		$viewData->addOption("búsqueda por titulo", "búsqueda por titulo", $this->getLink(self::CONTROLLER_NAME, "searchTitle"));
+		$viewData->addOption("búsqueda por titulo", KeyPhone::KEY_1, $this->getLink(self::CONTROLLER_NAME, "searchTitle"));
+		$viewData->addOption("búsqueda por actor", "búsqueda por actor", $this->getLink(self::CONTROLLER_NAME, "searchActor"));
+		$viewData->addOption("búsqueda por actor", KeyPhone::KEY_2, $this->getLink(self::CONTROLLER_NAME, "searchActor"));
+		$viewData->addOption("búsqueda por director", "búsqueda por director", $this->getLink(self::CONTROLLER_NAME, "searchDirector"));
+		$viewData->addOption("búsqueda por director", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "searchDirector"));
+		$viewData->addOption("ver cartelera", "ver cartelera", $this->getLink(self::CONTROLLER_NAME, "getCartelera"));
+		$viewData->addOption("ver cartelera", KeyPhone::KEY_4, $this->getLink(self::CONTROLLER_NAME, "getCartelera"));
+		$viewData->addOption("salir de la cuenta", "salir", $this->getLink(LoginController::CONTROLLER_NAME, "logout"));
+		$viewData->addOption("salir de la cuenta", KeyPhone::KEY_5, $this->getLink(LoginController::CONTROLLER_NAME, "logout"));
+
+		$viewData->setPrompt("$preprompt Niño eres el puto amo, Bienvenido al sistema de informacion de peliculas por telefono."
+			. " Para buscar una película por título pulse 1 o diga búsqueda por título."
+			. " Para buscar una película por actor pulse 2 o diga búsqueda por actor."
+			. " Para buscar una pelicula por director pulse 3 o diga búsqueda por director. "
+			. " Para oir la cartelera pulse 4 o diga ver cartelera o diga cartelera."
+			. " Para salir de su cuenta pulse 5 o diga salir");
+
+		$view = MenuView::create();
+		$view->render($viewData);
+	}
+
+	private function unloggedMainMenu($data, $preprompt = '') {
+		$viewData = MenuViewData::create();
+		$viewData->addOption("búsqueda por titulo", "búsqueda por titulo", $this->getLink(self::CONTROLLER_NAME, "searchTitle"));
+		$viewData->addOption("búsqueda por titulo", KeyPhone::KEY_1, $this->getLink(self::CONTROLLER_NAME, "searchTitle"));
+		$viewData->addOption("búsqueda por actor", "búsqueda por actor", $this->getLink(self::CONTROLLER_NAME, "searchActor"));
+		$viewData->addOption("búsqueda por actor", KeyPhone::KEY_2, $this->getLink(self::CONTROLLER_NAME, "searchActor"));
+		$viewData->addOption("búsqueda por director", "búsqueda por director", $this->getLink(self::CONTROLLER_NAME, "searchDirector"));
+		$viewData->addOption("búsqueda por director", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "searchDirector"));
+		$viewData->addOption("ver cartelera", "ver cartelera", $this->getLink(self::CONTROLLER_NAME, "getCartelera"));
+		$viewData->addOption("ver cartelera", "cartelera", $this->getLink(self::CONTROLLER_NAME, "getCartelera"));
+		$viewData->addOption("ver cartelera", KeyPhone::KEY_4, $this->getLink(self::CONTROLLER_NAME, "getCartelera"));
+		$viewData->addOption("hacer lóguin", "lóguin", $this->getLink(LoginController::CONTROLLER_NAME, "login"));
+		$viewData->addOption("hacer lóguin", KeyPhone::KEY_5, $this->getLink(LoginController::CONTROLLER_NAME, "login"));
+		$viewData->addOption("registrar", "registrar", $this->getLink(LoginController::CONTROLLER_NAME, "register"));
+		$viewData->addOption("registrar", KeyPhone::KEY_6, $this->getLink(LoginController::CONTROLLER_NAME, "register"));
+		$viewData->setPrompt("$preprompt Bienvenido al sistema de informacion de peliculas por telefono."
+			. " Para buscar una película por título pulse 1 o diga búsqueda por título."
+			. " Para buscar una película por actor pulse 2 o diga búsqueda por actor."
+			. " Para buscar una pelicula por director pulse 3 o diga búsqueda por director. "
+			. " Para oir la cartelera pulse 4 o diga ver cartelera o diga cartelera."
+			. " Para hacer lóguin pulse 5 o diga lóguin"
+			. " Para registrarse pulse 6 o diga registrar");
+
+		$view = MenuView::create();
+		$view->render($viewData);
+	}
 
 	public function getCartelera($data)
 	{
@@ -46,9 +93,9 @@ Class IndexVxmlFilmController extends Controller {
 		$viewData->setTotalPages($totalPages);
 		$optionNumber = 1;
 		$breadCrumbs = $this->getLink(self::CONTROLLER_NAME, $method, $params);
-
+		$viewData->addHiddenParam(self::BREADCRUMBS, $breadCrumbs->getHrefEncoded());
 		foreach($filmsData as $filmId => $filmTitle) {
-			$link = $this->getLink(self::CONTROLLER_NAME, 'getFilm', array(self::FILM_ID => $filmId, self::BREADCRUMBS => $breadCrumbs->getHrefEncoded()));
+			$link = $this->getLink(self::CONTROLLER_NAME, 'getFilm', array(self::FILM_ID => $filmId));
 			$viewData->addOption($filmTitle, KeyPhone::fromDigit($optionNumber), $link);
 			$optionNumber++;
 		}
@@ -103,7 +150,7 @@ Class IndexVxmlFilmController extends Controller {
 	    $viewData->setMainMenuLink($this->getMainMenuLink());
 	    $viewData->setVarReturnedName(self::QUERY_PARAM);
 	    $viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'searchTitleForm'));
-	    $viewData->setPrompt("Busqueda por titulo. por favor diga el titulo a buscar");
+	    $viewData->setPrompt("búsqueda por titulo. por favor diga el titulo a buscar");
 	    $viewData->addVoiceInput(Language::esES, "La jungla de cristal", true);
 	    $viewData->addVoiceInput(Language::esES, "matar a un ruiseñor", true);
 	    $viewData->addVoiceInput(Language::esES, "la isla minima", true);
@@ -129,7 +176,7 @@ Class IndexVxmlFilmController extends Controller {
 	    $viewData->setMainMenuLink($this->getMainMenuLink());
 	    $viewData->setVarReturnedName(self::QUERY_PARAM);
 	    $viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'searchActorForm'));
-	    $viewData->setPrompt("Busqueda por actor. Por favor diga el actor a buscar");
+	    $viewData->setPrompt("búsqueda por actor. Por favor diga el actor a buscar");
 	    $viewData->addInputFromCsv(GRAMMAR_CSV_PATH . "/actors2.csv");
 	    FormView::create()->render($viewData);
     }
@@ -150,7 +197,7 @@ Class IndexVxmlFilmController extends Controller {
 	    $viewData->setMainMenuLink($this->getMainMenuLink());
 	    $viewData->setVarReturnedName(self::QUERY_PARAM);
 	    $viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'searchDirectorForm'));
-	    $viewData->setPrompt("Busqueda por director. Por favor diga el director a buscar");
+	    $viewData->setPrompt("búsqueda por director. Por favor diga el director a buscar");
 	    $viewData->addInputFromCsv(GRAMMAR_CSV_PATH . "/directors.csv");
 	    FormView::create()->render($viewData);
     }
@@ -164,9 +211,4 @@ Class IndexVxmlFilmController extends Controller {
 	    $viewData->setTitle("Peliculas encontradas para el director " . $data[self::QUERY_PARAM]);
 	    MenuView::create()->render($viewData);
     }
-
-	private function getMainMenuLink()
-	{
-		return $this->getLink(self::CONTROLLER_NAME, "index");
-	}
 }

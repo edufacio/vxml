@@ -6,6 +6,7 @@ class FormViewData extends SimpleViewData
 	const NUMERIC_INPUT_RULE = 'numeric_inputs';
 	const NAVIGATION_RULE = 'navigation';
 
+	private $hiddenOption = false;
 	private $voiceInputs = array();
 	private $numericInputLength = 0;
 	private $submitLink;
@@ -200,6 +201,16 @@ class FormViewData extends SimpleViewData
 	public function setSubmitLink(Link $submitLink)
 	{
 		$this->submitLink = $submitLink;
+	}
+
+	public function isHiddenOption()
+	{
+		return $this->hiddenOption;
+	}
+
+	public function setHiddenOption()
+	{
+		$this->hiddenOption = true;
 	}
 }
 

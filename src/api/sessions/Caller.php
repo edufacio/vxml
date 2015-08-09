@@ -85,8 +85,12 @@ class Caller extends StorageObject
 		return $this->get(CallerStorage::PHONE);
 	}
 
-	public function isRememberActive()
+	public function isAutoLoginEnabled()
 	{
 		return $this->get(CallerStorage::REMEMBER, self::REMEMBER_FALSE) == self::REMEMBER_TRUE;
+	}
+
+	public function setAutoLogin($autologin) {
+		return $this->set(CallerStorage::REMEMBER, $autologin);
 	}
 }

@@ -3,7 +3,7 @@ Abstract Class Controller {
     const BASE_URL = 'index.php?';
 	const SESSION = 'session';
 	const CALLER_ID = 'caller_id';
-    private $navigation;
+    protected $navigation;
 
     function __construct(NavigationMap $navigationMap)
     {
@@ -49,4 +49,9 @@ Abstract Class Controller {
         }
         return $url;
     }
+
+	protected function getMainMenuLink()
+	{
+		return $this->getLink(IndexVxmlFilmController::CONTROLLER_NAME, "index");
+	}
 }

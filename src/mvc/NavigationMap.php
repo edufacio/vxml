@@ -16,40 +16,76 @@ Class NavigationMap
 
 
 	private static $CONFIG = array(
-        "IndexVxmlFilm" => array(
-            "index" => array(
+		'Login' => array(
+			'index' => array(
+				self::PARAMS => array(),
+			),
+			'login' => array(
+				self::PARAMS => array(),
+			),
+			'newLogin' => array(
+				self::PARAMS => array(),
+			),
+			'logout' => array(
+				self::PARAMS => array(),
+			),
+			'loginStepPassword' => array(
+				self::PARAMS => array(LoginController::PHONE),
+			),
+			'loginCheck' => array(
+				self::PARAMS => array(LoginController::PASSWORD),
+			),
+			'postLoginAction' => array(
+				self::PARAMS => array(LoginController::ANSWER),
+			),
+			'register' => array(
+				self::PARAMS => array(),
+			),
+			'registerStepPassword1' => array(
+				self::PARAMS => array(LoginController::PHONE),
+			),
+			'registerStepPassword2' => array(
+				self::PARAMS => array(LoginController::PASSWORD),
+			),
+			'checkRegistration' => array(
+				self::PARAMS => array(LoginController::PASSWORD_CHECK, LoginController::PASSWORD),
+			),
+
+		),
+        'IndexVxmlFilm' => array(
+            'index' => array(
                 self::PARAMS => array(),
             ),
-            "searchTitle" => array(
+            'searchTitle' => array(
                 self::PARAMS => array(),
             ),
-            "searchActor" => array(
+            'searchActor' => array(
                 self::PARAMS => array(),
             ),
-            "searchDirector" => array(
+            'searchDirector' => array(
                 self::PARAMS => array(),
             ),
-	        "getCartelera" => array(
+	        'getCartelera' => array(
 		        self::PARAMS => array('page'),
 		        self::DEFAULT_VALUE => array('page' => 0),
             ),
-            "searchTitleForm" => array(
+            'searchTitleForm' => array(
                 self::PARAMS => array('query', 'page'),
 	            self::DEFAULT_VALUE => array('page' => 0),
             ),
-            "searchActorForm" => array(
+            'searchActorForm' => array(
 	            self::PARAMS => array('query', 'page'),
 	            self::DEFAULT_VALUE => array('page' => 0),
             ),
-            "searchDirectorForm" => array(
+            'searchDirectorForm' => array(
 	            self::PARAMS => array('query', 'page'),
 	            self::DEFAULT_VALUE => array('page' => 0),
             ),
-            "getFilm" => array(
+            'getFilm' => array(
                 self::PARAMS => array('filmId', 'breadCrumb'),
 	            self::OPTIONAL_PARAMS => array('breadCrumb'),
             ),
-	        "getFilmDetailed" => array(
+	        'getFilmDetailed' => array(
 		        self::PARAMS => array('filmId', 'breadCrumb'),
 		        self::OPTIONAL_PARAMS => array('breadCrumb'),
 	        ),
