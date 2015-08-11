@@ -1,12 +1,56 @@
 <?
+//require_once '/Users/econtreras/branches/vxml/src/api/filmaffinity/simple_html_dom.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/filmaffinity/Showtime.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/filmaffinity/SessionTime.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/filmaffinity/Cinema.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/filmaffinity/Film.php';
+//require_once '/Users/econtreras/branches/vxml/src/Injector.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/storage/DbConfig.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/storage/DbStorage.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/storage/StorageObject.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/filmpreferences/FilmCacheStorage.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/filmpreferences/FilmCache.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/filmpreferences/FilmRecomendationCalculator.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/filmpreferences/FilmPreferences.php';
+//require_once '/Users/econtreras/branches/vxml/src/api/filmpreferences/FilmPreferencesStorage.php';
+//date_default_timezone_set('Europe/Berlin');
+//$f = new FilmAffinityApi();
+//$ss = $f->getShowtimes('ES-M', array(451, 261), 19, 0);
+//
+//var_dump(count($ss));
+///* @var ShowTime  $s */
+///* @var Sessiontime  $sessionTime */
+////var_dump($ss[0]->getSessionTimes(), $ss[0]->getCinema(), $ss[0]->getFilm()->getTitle());
+//foreach ($ss as $s) {
+//	echo $s->getFilm()->getTitle() . ',' . $s->getFilm()->getRating() .','. $s->getFilm()->getRecommendation() . "\n";
+//	foreach ($s->getSessionTimes() as $sessionTime){
+//		echo "\t" . $sessionTime->getCinema()->getName() . ":\n";
+//		foreach($sessionTime->getTimes() as $t) {
+//			echo "\t\t" . date('r', $t) . "\n";
+//		}
+//
+//	}
+//}
+
 class FilmAffinityApi
 {
 	const BASE_URL = 'http://www.filmaffinity.com/';
 	const ACTOR_QUERY = 'es/search.php?stype=cast&stext=';
 	const TITLE_QUERY = 'es/search.php?stype=title&stext=';
 	const DIRECTOR_QUERY = 'es/search.php?stype=director&stext=';
-	const CARTELERA_QUERY = '/es/cat_new_th_es.html';
-	const FILM_QUERY = '/es/film%id%.html';
+	const CARTELERA_QUERY = 'es/cat_new_th_es.html';
+	const CARTELERA_BY_RATING_QUERY = 'es/topcat.php?id=new_th_es';
+	const CARTELERA_BY_POPULAR_QUERY = 'es/countcat.php?id=new_th_es';
+	const CARTELERA_BY_RELEASE_QUERY = 'es/rdcat.php?id=new_th_es';
+	const NEXT_RELEASE_QUERY = 'es/cat_upc_th_es.html';
+	const NEXT_RELEASE_BY_RATING_QUERY = 'es/topcat.php?id=upc_th_es';
+	const NEXT_RELEASE_BY_POPULAR_QUERY = 'es/countcat.php?id=upc_th_es';
+	const NEXT_RELEASE_BY_RELEASE_QUERY = 'es/rdcat.php?id=upc_th_es';
+
+	const FILM_QUERY = 'es/film%id%.html';
+	const CINEMAS_QUERY = 'es/theaters.php?state=%id%';
+	const SHOWTIMES_QUERY = 'es/theater-showtimes.php?id=%id%';
+	const CACHE_TIME = 86400;
 	private static $instance;
 
 	/**
@@ -20,6 +64,127 @@ class FilmAffinityApi
 		return self::$instance;
 	}
 
+	public function getShowtimes($provinceId, $cinemaIds, $startHour, $endHour)
+	{
+		$allCinemas = $this->getAllCinemas($provinceId);
+		$showTimes = array();
+		$films = array();
+		foreach ($cinemaIds as $cinemaId) {
+			$cinema = $allCinemas[$cinemaId];
+			$pageDom = $this->request(str_replace('%id%', $cinemaId, self::SHOWTIMES_QUERY));
+			$movies = $pageDom->find('div[class=movie]');
+			foreach ($movies as $movie) {
+				$minDuration = intval(reset($movie->find('[span class=runtime]'))->text());
+				$sessions = $this->getValidShowTimeSessions($movie, $minDuration, $startHour, $endHour);
+				if (!empty($sessions)) {
+					$filmId = $this->getId($movie->id);
+					if (!isset($films[$filmId])) {
+						$films[$filmId] = $this->getFilm($filmId);
+					}
+					$film = $films[$filmId];
+					$sessionTime = new SessionTime($cinema, $sessions);
+					if (isset($showTimes[$filmId])) {
+						$showTimes[$filmId]->addSessionTime($sessionTime);
+					} else {
+						$showTimes[$filmId] = new ShowTime($film, array($sessionTime));
+					}
+				}
+			}
+		}
+		uasort($showTimes, array($this, 'sortByRating'));
+		return $showTimes;
+	}
+
+	/**
+	 * @param ShowTime $itemA
+	 * @param ShowTime $itemB
+	 *
+	 * @return mixed
+	 */
+	private function sortByRating($itemA, $itemB) {
+		if ($itemA->getFilm()->hasRecomendation() && $itemB->getFilm()->hasRecomendation()) {
+			return 100 * ($itemB->getFilm()->getRecommendation() - $itemA->getFilm()->getRecommendation());
+		}
+
+		if ($itemA->getFilm()->hasRating() && $itemB->getFilm()->hasRating()) {
+				return 100 * ($itemA->getFilm()->getRating() - $itemA->getFilm()->getRating());
+		} elseif ($itemA->getFilm()->hasRating()) {
+			return -1;
+		} elseif ($itemB->getFilm()->hasRating()) {
+			return 1;
+		} else {
+			return reset($itemB->getSessionTimes()) - reset($itemA->getSessionTimes());
+		}
+	}
+
+	private function getValidShowTimeSessions($movie, $minDuration, $startTime, $endTime)
+	{
+		$validSessions = array();
+		$currentDay = date('j');
+		$startTimestamp = strtotime("$startTime:00");
+		$endTimestamp = strtotime("$endTime:00");
+		if ($endTimestamp < $startTimestamp) {
+			$endTimestamp += 3600 * 24;
+		}
+
+		$secondsDuration = $minDuration * 60;
+		$sessionsDates = $movie->find("div[class=sess-date] span[class=mday]");
+		$sessionsTimes = $movie->find("ul[class=sess-times]");
+		foreach ($sessionsDates as $key => $sessionDate) {
+			$sessionDay = intval($sessionDate->text());
+			if ($currentDay > $sessionDay) {
+				$sessionDate = date('Y-m-', strtotime('+1 month')) . $sessionDay;
+			} else {
+				$sessionDate = date('Y-m-') . $sessionDay;
+			}
+			if (isset($sessionsTimes[$key])) {
+				$sessionHours = $sessionsTimes[$key]->find("li");
+
+				foreach ($sessionHours as $sessionHour) {
+					$hour = $sessionHour->text();
+					$sessionBegin = strtotime($hour);
+					$sessionEnd = $sessionBegin + $secondsDuration;
+					if ($sessionBegin >= $startTimestamp && $sessionEnd <= $endTimestamp) {
+						$validSessions[] = strtotime("$sessionDate, $hour");
+					}
+				}
+			}
+		}
+		return $validSessions;
+	}
+
+	public function getCinemasPaginated($provinceId, $page, $cinemasPerPage)
+	{
+		$allCinemas = $this->getAllCinemas($provinceId);
+		$cinemasPaginated = array_slice($allCinemas, $page * $cinemasPerPage, $cinemasPerPage);
+		$totalPages = ceil(count($allCinemas) / $cinemasPerPage);
+		return array($totalPages, $cinemasPaginated);
+	}
+
+	public function getCinemas($provinceId, array $cinemaIds) {
+		$cinemas = $this->getAllCinemas($provinceId);
+		$cinemasFound = array();
+		foreach ($cinemaIds as $cinemaId) {
+			$cinemasFound[$cinemaId] = $cinemas[$cinemaId];
+		}
+		return $cinemasFound;
+	}
+
+	public function getAllCinemas($provinceId)
+	{
+		$pageDom = $this->request(str_replace('%id%', $provinceId, self::CINEMAS_QUERY));
+		$cinemas = $pageDom->find('a[class=theater-data]');
+		$validCinemas = array();
+		foreach ($cinemas as $cinema) {
+			$noValid = $cinema->find("i[class=fa fa-info-circle no-assigned]");
+			if (empty($noValid)) {
+				$id = $this->getId($cinema->href);
+				$validCinemas[$id] = new Cinema($id, $cinema->title, $cinema->text());
+			}
+		}
+		return $validCinemas;
+	}
+
 	/**
 	 * @param $filmId
 	 *
@@ -27,9 +192,22 @@ class FilmAffinityApi
 	 */
 	public function getFilm($filmId)
 	{
+		$filmCachestorage  = FilmCacheStorage::getInstance();
+		$cache = $filmCachestorage->getCache($filmId);
+		if ($cache->isExpired()) {
+			$rawFilmData = $this->requestFilmData($filmId);
+			$cache->setContent($rawFilmData)->setExpiration(time() + self::CACHE_TIME);
+			$filmCachestorage->save($cache);
+		}
+		$film = new Film($cache->getContent());
+		return FilmRecomendationCalculator::getInstance()->calculate($film);
+	}
+
+	private function requestFilmData($filmId) {
 		$filmRaw = array();
 		$pageDom = $this->request(str_replace('%id%', $filmId, self::FILM_QUERY));
 		$keysContent = $pageDom->find('dl[class=movie-info] dt');
+
 		$content = $pageDom->find('dl[class=movie-info] dd');
 		$mainTitle = reset($pageDom->find('h1[id=main-title] span'))->text();
 		$filmRaw["titulo"] = $mainTitle;
@@ -40,12 +218,18 @@ class FilmAffinityApi
 
 		$ratingDiv = $pageDom->find('div[id=movie-rat-avg]');
 		if (!empty($ratingDiv)) {
+			$filmRaw["puntuacion"] = preg_replace('/,/', '.', reset($ratingDiv)->text());
 			$totalVotes = reset($pageDom->find('div[id=movie-count-rat] span'))->text();
-			$filmRaw["puntuacion"] = reset($ratingDiv)->text();
-			$filmRaw["total de votaciones"] = $totalVotes;
+			$filmRaw["total de votaciones"] = preg_replace('/\./', '', $totalVotes);
 		}
 
-		return new Film($filmRaw);
+		$premiereContent = $pageDom->find('div[id=movie-categories]');
+		if (!empty($premiereContent)) {
+			preg_match('/\d*\/\d*\/\d*/', reset($premiereContent)->text(), $match);
+			$filmRaw[Film::PREMIERE] = $match[0];
+		}
+
+		return $filmRaw;
 	}
 
 	/**
@@ -98,7 +282,127 @@ class FilmAffinityApi
 		$filmsPaged = array_slice($films, $pageNumber * $filmsPerPage, $filmsPerPage);
 
 		foreach ($filmsPaged as $film) {
-			$cartelera[$this->getFilmId($film->href)] = $film->text();
+			$cartelera[$this->getId($film->href)] = $film->text();
+		}
+		return array($totalPages, $cartelera);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getCarteleraRatingSorted($pageNumber, $filmsPerPage)
+	{
+		$cartelera = array();
+		$pageDom = $this->request(self::CARTELERA_BY_RATING_QUERY);
+		$films = $pageDom->find('div[class=mc-title] a');
+		$totalPages = floor(count($films) / $filmsPerPage);
+		$filmsPaged = array_slice($films, $pageNumber * $filmsPerPage, $filmsPerPage);
+
+		foreach ($filmsPaged as $film) {
+			$cartelera[$this->getId($film->href)] = $film->text();
+		}
+		return array($totalPages, $cartelera);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getCarteleraVotesSorted($pageNumber, $filmsPerPage)
+	{
+		$cartelera = array();
+		$pageDom = $this->request(self::CARTELERA_BY_POPULAR_QUERY);
+		$films = $pageDom->find('div[class=mc-title] a');
+		$totalPages = floor(count($films) / $filmsPerPage);
+		$filmsPaged = array_slice($films, $pageNumber * $filmsPerPage, $filmsPerPage);
+
+		foreach ($filmsPaged as $film) {
+			$cartelera[$this->getId($film->href)] = $film->text();
+		}
+		return array($totalPages, $cartelera);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getCarteleraReleaseDateSorted($pageNumber, $filmsPerPage)
+	{
+		$cartelera = array();
+		$pageDom = $this->request(self::CARTELERA_BY_RELEASE_QUERY);
+		$films = $pageDom->find('div[class=mc-title] a');
+		$totalPages = floor(count($films) / $filmsPerPage);
+		$filmsPaged = array_slice($films, $pageNumber * $filmsPerPage, $filmsPerPage);
+
+		foreach ($filmsPaged as $film) {
+			$cartelera[$this->getId($film->href)] = $film->text();
+		}
+		return array($totalPages, $cartelera);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getNextRelease($pageNumber, $filmsPerPage)
+	{
+		$cartelera = array();
+		$pageDom = $this->request(self::NEXT_RELEASE_QUERY);
+		$films = $pageDom->find('div[class=movie-card] h3 a');
+		$totalPages = floor(count($films) / $filmsPerPage);
+		$filmsPaged = array_slice($films, $pageNumber * $filmsPerPage, $filmsPerPage);
+
+		foreach ($filmsPaged as $film) {
+			$cartelera[$this->getId($film->href)] = $film->text();
+		}
+		return array($totalPages, $cartelera);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getNextReleaseRatingSorted($pageNumber, $filmsPerPage)
+	{
+		$cartelera = array();
+		$pageDom = $this->request(self::NEXT_RELEASE_BY_RATING_QUERY);
+		$films = $pageDom->find('div[class=mc-title] a');
+		$totalPages = floor(count($films) / $filmsPerPage);
+		$filmsPaged = array_slice($films, $pageNumber * $filmsPerPage, $filmsPerPage);
+
+		foreach ($filmsPaged as $film) {
+			$cartelera[$this->getId($film->href)] = $film->text();
+		}
+		return array($totalPages, $cartelera);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getNextReleaseVotesSorted($pageNumber, $filmsPerPage)
+	{
+		$cartelera = array();
+		$pageDom = $this->request(self::NEXT_RELEASE_BY_POPULAR_QUERY);
+		$films = $pageDom->find('div[class=mc-title] a');
+		$totalPages = floor(count($films) / $filmsPerPage);
+		$filmsPaged = array_slice($films, $pageNumber * $filmsPerPage, $filmsPerPage);
+
+		foreach ($filmsPaged as $film) {
+			$cartelera[$this->getId($film->href)] = $film->text();
+		}
+		return array($totalPages, $cartelera);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getNextReleaseReleaseDateSorted($pageNumber, $filmsPerPage)
+	{
+		$cartelera = array();
+		$pageDom = $this->request(self::NEXT_RELEASE_BY_RELEASE_QUERY);
+		$films = $pageDom->find('div[class=mc-title] a');
+		$totalPages = floor(count($films) / $filmsPerPage);
+		$filmsPaged = array_slice($films, $pageNumber * $filmsPerPage, $filmsPerPage);
+
+		foreach ($filmsPaged as $film) {
+			$cartelera[$this->getId($film->href)] = $film->text();
 		}
 		return array($totalPages, $cartelera);
 	}
@@ -116,13 +420,14 @@ class FilmAffinityApi
 		return $dom;
 	}
 
-	public function curl($page) {
+	public function curl($page)
+	{
 		$c = curl_init(self::BASE_URL . $page);
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
 		return curl_exec($c);
 	}
 
-	private function getFilmId($href)
+	private function getId($href)
 	{
 		preg_match('/\d+/', $href, $match);
 		return $match[0];
@@ -138,7 +443,7 @@ class FilmAffinityApi
 		$pageDom = $this->request($query);
 		$films = $pageDom->find('div[class=mc-title] a');
 		$totalFilmsDom = reset($pageDom->find('div[class=sub-header-search]'));
-		if ($totalFilmsDom == false ) {
+		if ($totalFilmsDom == false) {
 			return array(0, array());
 		}
 
@@ -149,7 +454,7 @@ class FilmAffinityApi
 		$totalPages = floor($totalFilms / $filmsPerPage);
 		$filmsPaged = array_slice($films, 0, $filmsPerPage);
 		foreach ($filmsPaged as $film) {
-			$search[$this->getFilmId($film->href)] = $film->text();
+			$search[$this->getId($film->href)] = $film->text();
 		}
 		return array($totalPages, $search);
 	}

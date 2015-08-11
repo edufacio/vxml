@@ -8,7 +8,7 @@ class FormViewData extends SimpleViewData
 
 	private $hiddenOption = false;
 	private $voiceInputs = array();
-	private $numericInputLength = 0;
+	private $numericInputs = array();
 	private $submitLink;
 	private $varReturnedName;
 	private $externalGrammarPath;
@@ -46,20 +46,20 @@ class FormViewData extends SimpleViewData
 	        $grammar .= '</one-of>' . PHP_EOL . '</rule>' . PHP_EOL . '</grammar>';
 		}
 		$grammar .= PHP_EOL;
-		if ($this->hasNavigation() || $this->getNumericInputLength() > 0) {
+		if ($this->hasNavigation() || $this->hasNumericInput()) {
 			$grammar.= '<grammar mode="dtmf" root="request">' . PHP_EOL;
 			if ($this->hasNavigation()) {
 				$grammar .= $this->buildNavigationRule();
 			}
-			if ($this->getNumericInputLength() > 0) {
+			if ($this->hasNumericInput()) {
 				$grammar .= $this->buildNumericInput();
 			}
 			$grammar .= '<rule id="request" scope="public">' . PHP_EOL . "<one-of>" . PHP_EOL;
 			if($this->hasNavigation()) {
 				$grammar .=  '<item> <ruleref uri="#'. self::NAVIGATION_RULE . '"/> </item>' . PHP_EOL;
 			}
-			if($this->getNumericInputLength() > 0) {
-				$grammar .=  '<item repeat="'. $this->getNumericInputLength() . '"> <ruleref uri="#'. self::ALL_DIGITS . '"/> </item>' . PHP_EOL;
+			foreach ($this->getNumericInput() as $inputLenght) {
+				$grammar .=  '<item repeat="'. $inputLenght . '"> <ruleref uri="#'. self::ALL_DIGITS . '"/> </item>' . PHP_EOL;
 			}
 			$grammar .= '</one-of>' . PHP_EOL . '</rule>' . PHP_EOL . '</grammar>';
 		}
@@ -144,17 +144,20 @@ class FormViewData extends SimpleViewData
 		$this->addVoiceInputOption($language, $input);
 	}
 
-	public function addNumericInputLength($numericInputLength)
+	public function addNumericInput($numericInputLength)
 	{
-		$this->numericInputLength = $numericInputLength;
+		$this->numericInputs[] = $numericInputLength;
 	}
 
-	public function getNumericInputLength()
+	public function getNumericInput()
 	{
-		return $this->numericInputLength;
+		return $this->numericInputs;
 	}
 
-
+	public function hasNumericInput()
+	{
+		return !empty($this->numericInputs);
+	}
 
 	public function getVoiceInputs()
 	{

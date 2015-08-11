@@ -154,7 +154,7 @@ abstract class DbStorage
 	 *
 	 * @return StorageObject | null
 	 */
-	public function find(array $keys) {
+	public function find(array $keys, $default = null) {
 		$columns = $this->getPrimaryKeyColumns();
 		$params = array();
 		$where = array();
@@ -166,7 +166,8 @@ abstract class DbStorage
 			$where[] = "$pkColumn = ?";
 		}
 
-		return array_shift($this->get("where " . implode('and', $where), $params));
+		$result =  array_shift($this->get("where " . implode('and', $where), $params));
+		return $result !== null ? $result : $default;
 	}
 
 	/**

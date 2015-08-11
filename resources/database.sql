@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 
 DROP TABLE IF EXISTS `callers`;
 CREATE TABLE IF NOT EXISTS `callers` (
-  `caller_id` INT UNSIGNED NOT NULL,
+  `caller_id` VARCHAR(64) NOT NULL,
   `phone` INT UNSIGNED,
   `first_login_time` INT UNSIGNED,
   `last_login_time` INT UNSIGNED,
@@ -32,9 +32,20 @@ CREATE TABLE IF NOT EXISTS `callers` (
 DROP TABLE IF EXISTS `film_preferences`;
 CREATE TABLE IF NOT EXISTS `film_preferences` (
   `phone` INT UNSIGNED NOT NULL,
-  `directors` BLOB NOT NULL,
-  `actors` BLOB NOT NULL,
-  `genres` BLOB NOT NULL,
+  `favourite_directors` BLOB NOT NULL,
+  `favourite_actors` BLOB NOT NULL,
+  `favourite_genres` BLOB NOT NULL,
+  `disliked_directors` BLOB NOT NULL,
+  `disliked_actors` BLOB NOT NULL,
+  `disliked_genres` BLOB NOT NULL,
   `cinema` BLOB NOT NULL,
   PRIMARY KEY (`phone`)
+) DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `film_cache`;
+CREATE TABLE IF NOT EXISTS `film_cache` (
+  `film_id` INT UNSIGNED NOT NULL,
+  `content` BLOB NOT NULL,
+  `expiration` INT UNSIGNED,
+  PRIMARY KEY (`film_id`)
 ) DEFAULT CHARSET=utf8;

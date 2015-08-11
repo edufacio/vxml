@@ -2,6 +2,7 @@
 
 class Film
 {
+	const MAX_RECOMMENDATION = 10;
 	const TITLE = "titulo";
 	const ORIGINAL_TITLE = "Título original";
 	const YEAR = "Año";
@@ -19,91 +20,138 @@ class Film
 	const CRITICS = "Críticas";
 	const RATING = "puntuacion";
 	const RATE_COUNT = "total de votaciones";
+	const PREMIERE = "premiere";
 
-    private $rawData;
+	private $rawData;
+	private $recommendation;
 
 	function __construct($rawData)
 	{
 		$this->rawData = $rawData;
 	}
 
-	private function getKey($key) {
+	private function getKey($key)
+	{
 		return $this->escape($this->rawData[$key]);
 	}
 
-	public function getTitle() {
+	public function getTitle()
+	{
 		return $this->getKey(self::TITLE);
 	}
 
-	public function getOriginalTitle() {
+	public function getOriginalTitle()
+	{
 		return $this->getKey(self::ORIGINAL_TITLE);
 	}
 
-	public function getYear() {
+	public function getYear()
+	{
 		return $this->getKey(self::YEAR);
 	}
 
-	public function getDuration() {
-		return $this->getKey(self::DURATION);
+	public function getDuration()
+	{
+		return intval($this->getKey(self::DURATION));
 	}
 
-	public function getCountry() {
+	public function getCountry()
+	{
 		return $this->getKey(self::COUNTRY);
 	}
 
-	public function getDirector() {
+	public function getDirector()
+	{
 		return $this->getKey(self::DIRECTOR);
 	}
 
-	public function getScriptWriter() {
+	public function getScriptWriter()
+	{
 		return $this->getKey(self::SCRIPTWRITER);
 	}
 
-	public function getMusic() {
+	public function getMusic()
+	{
 		return $this->getKey(self::MUSIC);
 	}
 
-	public function getPhotography() {
+	public function getPhotography()
+	{
 		return $this->getKey(self::PHOTOGRAPHY);
 	}
 
-	public function getCasting() {
+	public function getCasting()
+	{
 		return $this->getKey(self::CASTING);
 	}
 
-	public function getProductor() {
+	public function getProductor()
+	{
 		return $this->getKey(self::PRODUCTOR);
 	}
 
-	public function getGenre() {
+	public function getGenre()
+	{
 		return $this->getKey(self::GENRE);
 	}
 
-	public function getWeb() {
+	public function getWeb()
+	{
 		return $this->getKey(self::WEB);
 	}
 
-	public function getSynopsis() {
+	public function getSynopsis()
+	{
 		return $this->getKey(self::SYNOPSIS);
 	}
-	public function getCriticts() {
+
+	public function getCriticts()
+	{
 		return $this->getKey(self::CRITICS);
 	}
 
-	public function hasRating() {
+	public function hasRating()
+	{
 		return isset($this->rawData[self::RATING]);
 	}
 
-	public function getRating() {
+	public function getRating()
+	{
 		return $this->getKey(self::RATING);
 	}
 
-	public function getRateCount() {
+	public function getRateCount()
+	{
 		return $this->getKey(self::RATE_COUNT);
 	}
 
 	private function escape($text)
 	{
-		return preg_replace(array('/\s+/', '/\|/','/&/'), array(' ', ',','y'), $text);
+		return preg_replace(array('/\s+/', '/\|/', '/&/'), array(' ', ',', 'y'), $text);
+	}
+
+	public function hasRecomendation()
+	{
+		return $this->recommendation !== null;
+	}
+
+	public function setRecommendation($recommendation)
+	{
+		$this->recommendation = $recommendation;
+	}
+
+	public function getRecommendation()
+	{
+		return $this->recommendation;
+	}
+
+	public function getPremiereDate()
+	{
+		return $this->getKey(self::PREMIERE);
+	}
+
+	public function hasPremiereDate()
+	{
+		return $this->getPremiereDate() !== null;
 	}
 }

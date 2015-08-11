@@ -1,16 +1,17 @@
 <?php
-class KeyPhone {
-    const KEY_1 = 'dtmf-1';
-    const KEY_2 = 'dtmf-2';
-    const KEY_3 = 'dtmf-3';
-    const KEY_4 = 'dtmf-4';
-    const KEY_5 = 'dtmf-5';
-    const KEY_6 = 'dtmf-6';
-    const KEY_7 = 'dtmf-7';
-    const KEY_8 = 'dtmf-8';
-    const KEY_9 = 'dtmf-9';
-    const KEY_0 = 'dtmf-0';
-    const KEY_STAR = 'dtmf-star';
+class KeyPhone
+{
+	const KEY_1 = 'dtmf-1';
+	const KEY_2 = 'dtmf-2';
+	const KEY_3 = 'dtmf-3';
+	const KEY_4 = 'dtmf-4';
+	const KEY_5 = 'dtmf-5';
+	const KEY_6 = 'dtmf-6';
+	const KEY_7 = 'dtmf-7';
+	const KEY_8 = 'dtmf-8';
+	const KEY_9 = 'dtmf-9';
+	const KEY_0 = 'dtmf-0';
+	const KEY_STAR = 'dtmf-star';
 
 	private static $keyByNumber = array(
 		0 => self::KEY_0,

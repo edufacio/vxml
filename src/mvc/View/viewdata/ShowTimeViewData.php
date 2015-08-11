@@ -1,4 +1,5 @@
 <?php
+
 class FilmBasicViewData extends MenuViewData
 {
 	/**

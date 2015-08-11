@@ -14,84 +14,6 @@ Class NavigationMap
 	const CALLER_PARAM = 'session_callerid';
 	const DEFAULT_CALLER = "default_caller";
 
-
-	private static $CONFIG = array(
-		'Login' => array(
-			'index' => array(
-				self::PARAMS => array(),
-			),
-			'login' => array(
-				self::PARAMS => array(),
-			),
-			'newLogin' => array(
-				self::PARAMS => array(),
-			),
-			'logout' => array(
-				self::PARAMS => array(),
-			),
-			'loginStepPassword' => array(
-				self::PARAMS => array(LoginController::PHONE),
-			),
-			'loginCheck' => array(
-				self::PARAMS => array(LoginController::PASSWORD),
-			),
-			'postLoginAction' => array(
-				self::PARAMS => array(LoginController::ANSWER),
-			),
-			'register' => array(
-				self::PARAMS => array(),
-			),
-			'registerStepPassword1' => array(
-				self::PARAMS => array(LoginController::PHONE),
-			),
-			'registerStepPassword2' => array(
-				self::PARAMS => array(LoginController::PASSWORD),
-			),
-			'checkRegistration' => array(
-				self::PARAMS => array(LoginController::PASSWORD_CHECK, LoginController::PASSWORD),
-			),
-
-		),
-        'IndexVxmlFilm' => array(
-            'index' => array(
-                self::PARAMS => array(),
-            ),
-            'searchTitle' => array(
-                self::PARAMS => array(),
-            ),
-            'searchActor' => array(
-                self::PARAMS => array(),
-            ),
-            'searchDirector' => array(
-                self::PARAMS => array(),
-            ),
-	        'getCartelera' => array(
-		        self::PARAMS => array('page'),
-		        self::DEFAULT_VALUE => array('page' => 0),
-            ),
-            'searchTitleForm' => array(
-                self::PARAMS => array('query', 'page'),
-	            self::DEFAULT_VALUE => array('page' => 0),
-            ),
-            'searchActorForm' => array(
-	            self::PARAMS => array('query', 'page'),
-	            self::DEFAULT_VALUE => array('page' => 0),
-            ),
-            'searchDirectorForm' => array(
-	            self::PARAMS => array('query', 'page'),
-	            self::DEFAULT_VALUE => array('page' => 0),
-            ),
-            'getFilm' => array(
-                self::PARAMS => array('filmId', 'breadCrumb'),
-	            self::OPTIONAL_PARAMS => array('breadCrumb'),
-            ),
-	        'getFilmDetailed' => array(
-		        self::PARAMS => array('filmId', 'breadCrumb'),
-		        self::OPTIONAL_PARAMS => array('breadCrumb'),
-	        ),
-        ),
-    );
-
 	/**
 	 * @return NavigationMap
 	 */
@@ -233,6 +155,218 @@ Class NavigationMap
 			return self::DEFAULT_CALLER;
 		}
 	}
+
+	private static $CONFIG = array(
+		'Profile' => array(
+			'index' => array(
+				self::PARAMS => array(),
+			),
+			'viewProvince' => array(
+				self::PARAMS => array(),
+			),
+			'modifyProvince' => array(
+				self::PARAMS => array(),
+			),
+			'saveProvince' => array(
+				self::PARAMS => array(ProfileController::NAME),
+			),
+			'viewSchedule' => array(
+				self::PARAMS => array(),
+			),
+			'modifySchedule' => array(
+				self::PARAMS => array(),
+			),
+			'saveStartSchedule' => array(
+				self::PARAMS => array(ProfileController::HOUR),
+			),
+			'saveEndSchedule' => array(
+				self::PARAMS => array(ProfileController::START_HOUR, ProfileController::HOUR),
+			),
+			'menuDirectors' => array(
+				self::PARAMS => array(),
+			),
+			'addBlackListedDirector' => array(
+				self::PARAMS => array(),
+			),
+			'addFavouriteDirector' => array(
+				self::PARAMS => array(),
+			),
+			'saveFavouriteDirector' => array(
+				self::PARAMS => array(ProfileController::NAME),
+			),
+			'saveBlackListedDirector' => array(
+				self::PARAMS => array(ProfileController::NAME),
+			),
+			'deleteFavouriteDirectors' => array(
+				self::PARAMS => array(),
+			),
+			'deleteBlackListedDirectors' => array(
+				self::PARAMS => array(),
+			),
+			'menuActors' => array(
+				self::PARAMS => array(),
+			),
+			'addFavouriteActor' => array(
+				self::PARAMS => array(),
+			),
+			'addBlackListedActor' => array(
+				self::PARAMS => array(),
+			),
+			'saveFavouriteActor' => array(
+				self::PARAMS => array(ProfileController::NAME),
+			),
+			'saveBlackListedActor' => array(
+				self::PARAMS => array(ProfileController::NAME),
+			),
+			'deleteBlackListedActors' => array(
+				self::PARAMS => array(),
+			),
+			'deleteFavouriteActors' => array(
+				self::PARAMS => array(),
+			),
+			'menuGenres' => array(
+				self::PARAMS => array(),
+			),
+			'addFavouriteGenre' => array(
+				self::PARAMS => array(),
+			),
+			'addBlackListedGenre' => array(
+				self::PARAMS => array(),
+			),
+			'saveFavouriteGenre' => array(
+				self::PARAMS => array(ProfileController::NAME),
+			),
+			'saveBlackListedGenre' => array(
+				self::PARAMS => array(ProfileController::NAME),
+			),
+			'deleteFavouriteGenres' => array(
+				self::PARAMS => array(),
+			),
+			'deleteBlackListedGenres' => array(
+				self::PARAMS => array(),
+			),
+			'menuCinema' => array(
+				self::PARAMS => array(),
+			),
+			'chooseCinema' => array(
+				self::PARAMS => array(ProfileController::PAGE_PARAM),
+			),
+			'saveCinema' => array(
+				self::PARAMS => array(ProfileController::CINEMA),
+			),
+		),
+		'Login' => array(
+			'index' => array(
+				self::PARAMS => array(),
+			),
+			'login' => array(
+				self::PARAMS => array(),
+			),
+			'newLogin' => array(
+				self::PARAMS => array(),
+			),
+			'logout' => array(
+				self::PARAMS => array(),
+			),
+			'loginStepPassword' => array(
+				self::PARAMS => array(LoginController::PHONE),
+			),
+			'loginCheck' => array(
+				self::PARAMS => array(LoginController::PASSWORD),
+			),
+			'postLoginAction' => array(
+				self::PARAMS => array(LoginController::ANSWER),
+			),
+			'register' => array(
+				self::PARAMS => array(),
+			),
+			'registerStepPassword1' => array(
+				self::PARAMS => array(LoginController::PHONE),
+			),
+			'registerStepPassword2' => array(
+				self::PARAMS => array(LoginController::PASSWORD),
+			),
+			'checkRegistration' => array(
+				self::PARAMS => array(LoginController::PASSWORD_CHECK, LoginController::PASSWORD),
+			),
+
+		),
+		'IndexVxmlFilm' => array(
+			'index' => array(
+				self::PARAMS => array(),
+			),
+			'menuSearch' => array(
+				self::PARAMS => array(),
+			),
+			'menuCartelera' => array(
+				self::PARAMS => array(),
+			),
+			'menuNextRelease' => array(
+				self::PARAMS => array(),
+			),
+			'searchTitle' => array(
+				self::PARAMS => array(),
+			),
+			'searchActor' => array(
+				self::PARAMS => array(),
+			),
+			'searchDirector' => array(
+				self::PARAMS => array(),
+			),
+			'getCartelera' => array(
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'getCarteleraByRating' => array(
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'getCarteleraByDate' => array(
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'getCarteleraByVotes' => array(
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'getNextRelease' => array(
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'getNextReleaseByRating' => array(
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'getNextReleaseByDate' => array(
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'getNextReleaseByVotes' => array(
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'searchTitleForm' => array(
+				self::PARAMS => array('query', 'page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'searchActorForm' => array(
+				self::PARAMS => array('query', 'page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'searchDirectorForm' => array(
+				self::PARAMS => array('query', 'page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'getFilm' => array(
+				self::PARAMS => array('filmId', 'breadCrumb'),
+				self::OPTIONAL_PARAMS => array('breadCrumb'),
+			),
+			'getFilmDetailed' => array(
+				self::PARAMS => array('filmId', 'breadCrumb'),
+				self::OPTIONAL_PARAMS => array('breadCrumb'),
+			),
+		),
+	);
 }
 
 Class ParamNotFoundException extends InvalidArgumentException {

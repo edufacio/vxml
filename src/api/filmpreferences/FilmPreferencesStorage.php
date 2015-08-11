@@ -2,9 +2,12 @@
 
 class FilmPreferencesStorage extends DbStorage{
 	const PHONE = 'phone';
-	const DIRECTORS = 'directors';
-	const ACTORS = 'actors';
-	const GENRES = 'genres';
+	const FAVOURITE_DIRECTORS = 'favourite_directors';
+	const FAVOURITE_ACTORS = 'favourite_actors';
+	const FAVOURITE_GENRES = 'favourite_genres';
+	const DISLIKED_DIRECTORS = 'disliked_directors';
+	const DISLIKED_ACTORS = 'disliked_actors';
+	const DISLIKED_GENRES = 'disliked_genres';
 	const CINEMA = 'cinema';
 
 	private static $instance;
@@ -25,9 +28,12 @@ class FilmPreferencesStorage extends DbStorage{
 	{
 		return array(
 			self::PHONE,
-			self::DIRECTORS,
-			self::ACTORS,
-			self::GENRES,
+			self::FAVOURITE_DIRECTORS,
+			self::FAVOURITE_ACTORS,
+			self::FAVOURITE_GENRES,
+			self::DISLIKED_ACTORS,
+			self::DISLIKED_DIRECTORS,
+			self::DISLIKED_GENRES,
 			self::CINEMA,
 		);
 	}
@@ -37,7 +43,7 @@ class FilmPreferencesStorage extends DbStorage{
 	 */
 	protected function getStorageObjectClass()
 	{
-		return 'FavouriteDetails';
+		return 'FilmPreferences';
 	}
 
 	/**
@@ -45,7 +51,7 @@ class FilmPreferencesStorage extends DbStorage{
 	 */
 	protected function getTableName()
 	{
-		return 'favourite_details';
+		return 'film_preferences';
 	}
 
 	/**

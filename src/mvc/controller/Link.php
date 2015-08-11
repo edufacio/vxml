@@ -1,36 +1,39 @@
 <?php
 
-class Link {
-    private $href;
+class Link
+{
+	private $href;
 
-    private function __construct($href)
-    {
-        $this->href = $href;
-    }
+	private function __construct($href)
+	{
+		$this->href = $href;
+	}
 
-	public static function createFromEncondedHref($encodedHref) {
+	public static function createFromEncondedHref($encodedHref)
+	{
 		return new Link(urldecode($encodedHref));
 	}
 
-	public static function createFromHref($href) {
+	public static function createFromHref($href)
+	{
 		return new Link($href);
 	}
 
-    /**
-     * @param mixed $href
-     */
-    public function setHref($href)
-    {
-        $this->href = $href;
-    }
+	/**
+	 * @param mixed $href
+	 */
+	public function setHref($href)
+	{
+		$this->href = $href;
+	}
 
-    /**
-     * @return mixed
-     */
-    public function getHref()
-    {
-        return $this->href;
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getHref()
+	{
+		return $this->href;
+	}
 
 	/**
 	 * @return mixed
