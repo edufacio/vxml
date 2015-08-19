@@ -304,7 +304,7 @@ class FilmPreferences extends StorageObject
 	 */
 	public function setCinemas(array $cinemas)
 	{
-		return $this->set(FilmPreferencesStorage::FAVOURITE_GENRES, json_encode($cinemas));
+		return $this->set(FilmPreferencesStorage::CINEMA, json_encode($cinemas));
 	}
 
 	/**
@@ -339,11 +339,14 @@ class FilmPreferences extends StorageObject
 		return !empty($cinemas);
 	}
 
-	public function getCinemaNames($provinceId) {
-		$cinemas = FilmAffinityApi::getInstance()->getCinemas($provinceId, $this->getCinemas());
+	public function getCinemaNames($provinceId)
+	{
 		$cinemaNames = array();
-		foreach ($cinemas as $cinemaId => $cinema) {
-			$cinemaNames[$cinemaId] = $cinema->getName();
+		if ($this->hasCinemas()) {
+			$cinemas = FilmAffinityApi::getInstance()->getCinemas($provinceId, $this->getCinemas());
+			foreach ($cinemas as $cinemaId => $cinema) {
+				$cinemaNames[$cinemaId] = $cinema->getName();
+			}
 		}
 		return $cinemaNames;
 	}

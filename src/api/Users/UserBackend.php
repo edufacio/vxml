@@ -25,7 +25,7 @@ class UserBackend
 	public function passwordIsCorrect($phone, $password)
 	{
 		/* @var $user User */
-		$user = UserStorage::getInstance()->find(array(UserStorage::PHONE => $phone));
+		$user = UserStorage::getInstance()->find(array(UserStorage::PHONE => $phone), User::create());
 		return $user->getPassword() == $password;
 	}
 
@@ -225,5 +225,11 @@ class UserBackend
 	{
 		$filmPreferences = $this->getPreferences($phone);
 		return $filmPreferences->getCinemas();
+	}
+
+	public function getShowTimes(User $user)
+	{
+		$cinemas = $this->getPreferences($user->getPhone())->getCinemas();
+		return FilmAffinityApi::getInstance()->getShowtimes($user->getProvinceId(), $cinemas, $user->getStartFavouriteSchedule(), $user->getEndFavouriteSchedule());
 	}
 }

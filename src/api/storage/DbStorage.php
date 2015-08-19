@@ -3,7 +3,7 @@ abstract class DbStorage
 {
 
 	/**
-	 * @var PDO
+	 * @var DbConnection
 	 */
 	private $db = null;
 
@@ -29,11 +29,7 @@ abstract class DbStorage
 
 	private function connect()
 	{
-		if ($this->db === null) {
-			$dbConfig = DbConfig::create()->getDbConfig();
-			$dsn = 'mysql:dbname=' . $dbConfig[DbConfig::DB_NAME] . ';host=' . $dbConfig[DbConfig::HOST];
-			$this->db = new PDO($dsn, $dbConfig[DbConfig::USER], $dbConfig[DbConfig::PASSWD]);
-		}
+		$this->db = DbConnection::getInstance();
 	}
 
 	/**
@@ -47,13 +43,7 @@ abstract class DbStorage
 	public function query($queryStr, $params = array())
 	{
 		$this->connect();
-		$query = $this->db->prepare($queryStr);
-		/* @var $query PDOStatement */
-		if ($query->execute($params)) {
-			return $query->fetchAll();
-		} else {
-			throw new PDOException("ERROR on query " . var_export(func_get_args(),true));
-		}
+		return $this->db->query($queryStr, $params);
 	}
 
 	/**

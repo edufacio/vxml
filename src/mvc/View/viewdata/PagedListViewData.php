@@ -30,6 +30,7 @@ class PagedListViewData extends MenuViewData
 	}
 
 
+
 	public function getPrompt()
 	{
 		$currentOptions = $this->getOptions();
@@ -135,9 +136,9 @@ class PagedListViewData extends MenuViewData
 		return "Lo sentimos no ha habido resultados";
 	}
 
-	private function buildPromptForOption(MenuOption $option)
+	protected function buildPromptForOption(MenuOption $option)
 	{
-		$optionName = $option->getInfoOption();
+		$optionName = $option->getEscapedInfoOption();
 		$voiceOption = $option->getVoiceOption();
 		$prompt = " $optionName, para elegirlo";
 		if (is_numeric($voiceOption)) {

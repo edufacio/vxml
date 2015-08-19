@@ -2,7 +2,7 @@
 define('BASE_PATH', dirname(__FILE__));
 define('GRAMMAR_PATH', BASE_PATH . "/src/grammar/" );
 define('GRAMMAR_CSV_PATH', GRAMMAR_PATH . "csv/" );
-
+setlocale(LC_ALL,"es_ES");
 Class Bootstrap
 {
 	const BOOTSTRAP_FILE = '/bootstrap.txt';

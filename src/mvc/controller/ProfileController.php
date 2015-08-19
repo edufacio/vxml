@@ -47,7 +47,7 @@ Class ProfileController extends Controller
 		$viewData->addOption("Géneros preferidos", KeyPhone::KEY_5, $this->getLink(self::CONTROLLER_NAME, "menuGenres"));
 
 		$viewData->addOption("Cines preferidos", "cines", $this->getLink(self::CONTROLLER_NAME, "menuCinema"));
-		$viewData->addOption("Cines preferidos", KeyPhone::KEY_5, $this->getLink(self::CONTROLLER_NAME, "menuCinema"));
+		$viewData->addOption("Cines preferidos", KeyPhone::KEY_6, $this->getLink(self::CONTROLLER_NAME, "menuCinema"));
 
 		$viewData->setPrompt("$preprompt Bienvenido a su perfil, con él seremos capaces de recomendarle películas"
 			. " Para ver o modificar su provincia, diga provincia o marque 1"
@@ -55,7 +55,7 @@ Class ProfileController extends Controller
 			. " Para ver o modificar sus directores preferidos, diga directores o marque 3"
 			. " Para ver o modificar sus actores preferidos, diga actores o marque 4"
 			. " Para ver o modificar sus géneros preferidos, diga géneros o marque 5"
-			. " Para ver o modificar sus cines preferidos, diga cines o marque 5");
+			. " Para ver o modificar sus cines preferidos, diga cines o marque 6");
 
 		$viewData->create()->setMainMenuLink($this->getMainMenuLink());
 		$view = MenuView::create();
@@ -443,8 +443,9 @@ Class ProfileController extends Controller
 			$viewData = MenuViewData::create();
 			$viewData->addOption("nuevo cine", "nuevo cine", $this->getLink(self::CONTROLLER_NAME, 'chooseCinema', array(self::PAGE_PARAM => 0)));
 			$preferences = $userBackend->getPreferences($currentPhone);
-			if ($preferences->hasCinemas()) {
-				$cinemaList = implode(',', $preferences->getCinemaNames($user->getProvinceId()));
+			$cinemas = $preferences->getCinemaNames($user->getProvinceId());
+			if (!empty($cinemas)) {
+				$cinemaList = implode(',', $cinemas);
 				$prompt .= "Esta es la lista de tus cines favoritos: " . $cinemaList . ". Para añadir un nuevo cine di nuevo cine, para borrarlos di borrar cines";
 				$viewData->addOption("borrar cines", "borrar cines", $this->getLink(self::CONTROLLER_NAME, 'deleteCinemas'));
 			} else {
@@ -483,6 +484,13 @@ Class ProfileController extends Controller
 		$phone = CurrentSession::getInstance()->getCurrentPhone();
 		UserBackend::getInstance()->addFavouriteCinemas($phone, $data[self::CINEMA]);
 		$this->menuCinema($data, "cine añadido a cines favoritos");
+	}
+
+	public function deleteCinemas($data, $prompt = '')
+	{
+		$phone = CurrentSession::getInstance()->getCurrentPhone();
+		UserBackend::getInstance()->deleteFavouriteCinemas($phone);
+		$this->menuCinema($data, "cines eliminados. ");
 	}
 
 	/**

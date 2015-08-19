@@ -44,7 +44,6 @@ class FilmRecomendationCalculator
 			$pointsTo10 = round($puntuation * 10 / $maxPuntuation, 2);
 			$film->setRecommendation(min(10,$pointsTo10));
 		}
-		echo "\n";
 		return $film;
 	}
 
@@ -87,6 +86,10 @@ class FilmRecomendationCalculator
 	private function pointsByMatch($stringToMatch, $possibles, $pointsByMatch, $maxPoints)
 	{
 		$points = 0;
+		if (!is_array($possibles)) {
+			return $points;
+		}
+
 		foreach ($possibles as $possible) {
 			if (preg_match("/$possible/i", $stringToMatch) > 0) {
 				$points += $pointsByMatch;

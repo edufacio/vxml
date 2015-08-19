@@ -32,8 +32,8 @@ Class IndexVxmlFilmController extends Controller
 		$viewData->addOption("buscar películas", KeyPhone::KEY_1, $this->getLink(self::CONTROLLER_NAME, "menuSearch"));
 		$viewData->addOption("cartelera", "cartelera", $this->getLink(self::CONTROLLER_NAME, "menuCartelera"));
 		$viewData->addOption("cartelera", KeyPhone::KEY_2, $this->getLink(self::CONTROLLER_NAME, "menuCartelera"));
-		$viewData->addOption("estrenos", "estrenos", $this->getLink(self::CONTROLLER_NAME, "menuNextRelease"));
-		$viewData->addOption("estrenos", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "searchDirector"));
+		$viewData->addOption("proximos estrenos", "proximos estrenos", $this->getLink(self::CONTROLLER_NAME, "menuNextRelease"));
+		$viewData->addOption("proximos estrenos", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "menuNextRelease"));
 		$viewData->addOption("que ver", "que ver", $this->getLink(self::CONTROLLER_NAME, "viewRecomendations"));
 		$viewData->addOption("que ver", KeyPhone::KEY_4, $this->getLink(self::CONTROLLER_NAME, "viewRecomendations"));
 		$viewData->addOption("tu perfil", "perfil", $this->getLink(ProfileController::CONTROLLER_NAME, "index"));
@@ -60,8 +60,8 @@ Class IndexVxmlFilmController extends Controller
 		$viewData->addOption("buscar películas", KeyPhone::KEY_1, $this->getLink(self::CONTROLLER_NAME, "menuSearch"));
 		$viewData->addOption("cartelera", "cartelera", $this->getLink(self::CONTROLLER_NAME, "menuCartelera"));
 		$viewData->addOption("cartelera", KeyPhone::KEY_2, $this->getLink(self::CONTROLLER_NAME, "menuCartelera"));
-		$viewData->addOption("estrenos", "estrenos", $this->getLink(self::CONTROLLER_NAME, "menuNextRelease"));
-		$viewData->addOption("estrenos", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "searchDirector"));
+		$viewData->addOption("proximos estrenos", "proximos estrenos", $this->getLink(self::CONTROLLER_NAME, "menuNextRelease"));
+		$viewData->addOption("proximos estrenos", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "menuNextRelease"));
 		$viewData->addOption("hacer lóguin", "lóguin", $this->getLink(LoginController::CONTROLLER_NAME, "login"));
 		$viewData->addOption("hacer lóguin", KeyPhone::KEY_4, $this->getLink(LoginController::CONTROLLER_NAME, "login"));
 		$viewData->addOption("registrar", "registrar", $this->getLink(LoginController::CONTROLLER_NAME, "register"));
@@ -69,14 +69,13 @@ Class IndexVxmlFilmController extends Controller
 		$viewData->setPrompt("$preprompt Bienvenido al sistema de informacion de peliculas por telefono."
 			. " Para buscar una película pulse 1 o diga buscar peliculas."
 			. " Para ir a la cartelera pulse 2 o diga cartelera."
-			. " Para ir a la Próximos estrenos pulse 3 o diga Próximos estrenos."
+			. " Para ir a los Próximos estrenos pulse 3 o diga Próximos estrenos."
 			. " Para hacer lóguin pulse 4 o diga lóguin"
 			. " Para registrarse pulse 5 o diga registrar");
 
 		$view = MenuView::create();
 		$view->render($viewData);
 	}
-
 
 
 	public function menuSearch($data, $preprompt = '')
@@ -95,7 +94,8 @@ Class IndexVxmlFilmController extends Controller
 			. " Para buscar una película por actor pulse 2 o diga búsqueda por actor."
 			. " Para buscar una pelicula por director pulse 3 o diga búsqueda por director. ");
 
-
+		$viewData->setMainMenuLink($this->getMainMenuLink());
+		$viewData->setPreviousPageLink($this->getMainMenuLink());
 		$view = MenuView::create();
 		$view->render($viewData);
 	}
@@ -103,39 +103,87 @@ Class IndexVxmlFilmController extends Controller
 	public function menuNextRelease($data, $preprompt = '')
 	{
 		$viewData = MenuViewData::create();
-		$viewData->addOption("Próximos Estrenos", "Próximos Estrenos", $this->getLink(self::CONTROLLER_NAME, "getNextRelease"));
-		$viewData->addOption("Próximos Estrenos", KeyPhone::KEY_1, $this->getLink(self::CONTROLLER_NAME, "getNextRelease"));
-		$viewData->addOption("Próximos Estrenos por fecha de estreno", "Próximos Estrenos por fecha de estreno", $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByDate"));
-		$viewData->addOption("Próximos Estrenos por fecha de estreno", KeyPhone::KEY_2, $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByDate"));
-		$viewData->addOption("Próximos Estrenos por puntuacion", "Próximos Estrenos por puntuacion", $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByRating"));
-		$viewData->addOption("Próximos Estrenos por puntuacion", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByRating"));
-		$viewData->addOption("Próximos Estrenos por popularidad", "Próximos Estrenos por puntuacion", $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByVotes"));
-		$viewData->addOption("Próximos Estrenos por popularidad", KeyPhone::KEY_4, $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByVotes"));
+		$viewData->addOption("Próximos Estrenos por fecha de estreno", "ver por fecha de estreno", $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByDate"));
+		$viewData->addOption("Próximos Estrenos por fecha de estreno", KeyPhone::KEY_1, $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByDate"));
+		$viewData->addOption("Próximos Estrenos por puntuacion", "ver por puntuacion", $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByRating"));
+		$viewData->addOption("Próximos Estrenos por puntuacion", KeyPhone::KEY_2, $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByRating"));
+		$viewData->addOption("Próximos Estrenos por popularidad", "ver por popularidad", $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByVotes"));
+		$viewData->addOption("Próximos Estrenos por popularidad", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "getNextReleaseByVotes"));
 
 
 		$viewData->setPrompt("$preprompt Menú Próximos Estrenos: "
-			. " Para ver la Próximos Estrenos diga NextRelease o pulse 1."
-			. " Para ver la Próximos Estrenos ordenada por fecha de estreno diga NextRelease por fecha de estreno o pulse 2."
-			. " Para ver la Próximos Estrenos ordenada por puntuacion diga NextRelease por puntuacion o pulse 3."
-			. " Para ver la Próximos Estrenos ordenada por popularidad(número de votos) diga NextRelease por popularidad o pulse 4.");
+			. " Para ver los Próximos Estrenos ordenada por fecha de estreno diga ver por fecha de estreno o pulse 1."
+			. " Para ver los Próximos Estrenos ordenada por puntuacion diga ver por puntuacion o pulse 2."
+			. " Para ver los Próximos Estrenos ordenada por popularidad(número de votos) diga ver por popularidad o pulse 3.");
 
 
 		$viewData->setMainMenuLink($this->getMainMenuLink());
+		$viewData->setPreviousPageLink($this->getMainMenuLink());
 		$view = MenuView::create();
 		$view->render($viewData);
 	}
 
-	public function getNextRelease($data)
+	public function viewRecomendations($data, $preprompt = '')
 	{
-		list($totalPages, $films) = FilmAffinityApi::getInstance()->getNextRelease($data[self::PAGE_PARAM], self::FILMS_BY_PAGE);
-		$viewData = $this->getFilmsPagedListViewData($films, $totalPages, $data[self::PAGE_PARAM], __FUNCTION__, $data);
-		$mainMenuLink = $this->getMainMenuLink();
-		$viewData->setMainMenuLink($mainMenuLink);
-		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, "menuNextRelease"));
-		$viewData->setTitle("Próximos Estrenos");
-		$view = MenuView::create();
-		$view->render($viewData);
+		if (!CurrentSession::getInstance()->isLogged()) {
+			$this->index($data);
+			return;
+		}
+
+		$user = UserBackend::getInstance()->getUser(CurrentSession::getInstance()->getCurrentPhone());
+		if (!$user->hasProvinceId()) {
+			ProfileController::create($this->navigation)->modifyProvince($data, "Para poder recomendarte sesiones necesitamos saber tu provincia y tus cines favoritos");
+			return;
+		}
+		$preferences = UserBackend::getInstance()->getPreferences($user->getPhone());
+		if (!$preferences->hasCinemas()) {
+			ProfileController::create($this->navigation)->menuCinema($data, "Para poder recomendarte sesiones necesitamos saber tus cines favoritos");
+			return;
+		}
+
+		$showTimes = UserBackend::getInstance()->getShowTimes($user);
+		if (empty($showTimes)) {
+			ProfileController::create($this->navigation)->index($data, "No hemos encontrado ninguna recomendación por favor modifica tu perfil.");
+		} else {
+			$page = $data[self::PAGE_PARAM];
+			$totalPages = count($showTimes) - 1;
+			if ($page > $totalPages) {
+				$page = $totalPages;
+			}
+			$viewData = $this->getShowTimeView($showTimes, $page, $totalPages);
+			$viewData->setMainMenuLink($this->getMainMenuLink());
+			$viewData->setPreviousPageLink($this->getMainMenuLink());
+			MenuView::create()->render($viewData);
+		}
 	}
+
+	private function getShowTimeView($showTimes, $currentPageNumber, $totalPages)
+	{
+		$showTime = array_shift(array_slice($showTimes, $currentPageNumber, 1));
+		$filmLink = $this->getLink(self::CONTROLLER_NAME, 'getFilm', array(self::FILM_ID => $showTime->getFilm()->getFilmId()));
+		$viewData = ShowTimeViewData::create();
+		$viewData->setShowTime($showTime, $filmLink);
+		$viewData->setTotalPages($totalPages);
+		$viewData->setCurrentPageNumber($currentPageNumber);
+		$params = array(self::PAGE_PARAM => $currentPageNumber);
+		$viewData->addHiddenParam(self::BREADCRUMBS, $this->getLink(self::CONTROLLER_NAME, 'viewRecomendations', $params)->getHrefEncoded());
+
+		if ($currentPageNumber > 0) {
+			$params[self::PAGE_PARAM] = 0;
+			$viewData->setFirstPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'viewRecomendations', $params));
+			$params[self::PAGE_PARAM] = $currentPageNumber - 1;
+			$viewData->setPreviousPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'viewRecomendations', $params));
+		}
+
+		if ($currentPageNumber < $totalPages) {
+			$params[self::PAGE_PARAM] = $currentPageNumber + 1;
+			$viewData->setNextPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'viewRecomendations', $params));
+			$params[self::PAGE_PARAM] = $totalPages;
+			$viewData->setLastPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'viewRecomendations', $params));
+		}
+		return $viewData;
+	}
+
 
 	public function getNextReleaseByRating($data)
 	{
@@ -176,37 +224,21 @@ Class IndexVxmlFilmController extends Controller
 	public function menuCartelera($data, $preprompt = '')
 	{
 		$viewData = MenuViewData::create();
-		$viewData->addOption("cartelera", "cartelera", $this->getLink(self::CONTROLLER_NAME, "getCartelera"));
-		$viewData->addOption("cartelera", KeyPhone::KEY_1, $this->getLink(self::CONTROLLER_NAME, "getCartelera"));
-		$viewData->addOption("cartelera por fecha de estreno", "cartelera por fecha de estreno", $this->getLink(self::CONTROLLER_NAME, "getCarteleraByDate"));
-		$viewData->addOption("cartelera por fecha de estreno", KeyPhone::KEY_2, $this->getLink(self::CONTROLLER_NAME, "getCarteleraByDate"));
-		$viewData->addOption("cartelera por puntuacion", "cartelera por puntuacion", $this->getLink(self::CONTROLLER_NAME, "getCarteleraByRating"));
-		$viewData->addOption("cartelera por puntuacion", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "getCarteleraByRating"));
-		$viewData->addOption("cartelera por popularidad", "cartelera por puntuacion", $this->getLink(self::CONTROLLER_NAME, "getCarteleraByVotes"));
-		$viewData->addOption("cartelera por popularidad", KeyPhone::KEY_4, $this->getLink(self::CONTROLLER_NAME, "getCarteleraByVotes"));
+		$viewData->addOption("cartelera por fecha de estreno", "ver por fecha de estreno", $this->getLink(self::CONTROLLER_NAME, "getCarteleraByDate"));
+		$viewData->addOption("cartelera por fecha de estreno", KeyPhone::KEY_1, $this->getLink(self::CONTROLLER_NAME, "getCarteleraByDate"));
+		$viewData->addOption("cartelera por puntuacion", "ver por puntuacion", $this->getLink(self::CONTROLLER_NAME, "getCarteleraByRating"));
+		$viewData->addOption("cartelera por puntuacion", KeyPhone::KEY_2, $this->getLink(self::CONTROLLER_NAME, "getCarteleraByRating"));
+		$viewData->addOption("cartelera por popularidad", "ver por popularidad", $this->getLink(self::CONTROLLER_NAME, "getCarteleraByVotes"));
+		$viewData->addOption("cartelera por popularidad", KeyPhone::KEY_3, $this->getLink(self::CONTROLLER_NAME, "getCarteleraByVotes"));
 
 
 		$viewData->setPrompt("$preprompt Menú cartelera: "
-			. " Para ver la cartelera diga cartelera o pulse 1."
-			. " Para ver la cartelera ordenada por fecha de estreno diga cartelera por fecha de estreno o pulse 2."
-			. " Para ver la cartelera ordenada por puntuacion diga cartelera por puntuacion o pulse 3."
-			. " Para ver la cartelera ordenada por popularidad(número de votos) diga cartelera por popularidad o pulse 4."
-			. " Para buscar una película por actor pulse 2 o diga búsqueda por actor."
-			. " Para buscar una pelicula por director pulse 3 o diga búsqueda por director. ");
+			. " Para ver la cartelera ordenada por fecha de estreno diga ver por fecha de estreno o pulse 1."
+			. " Para ver la cartelera ordenada por puntuacion diga ver por puntuacion o pulse 2."
+			. " Para ver la cartelera ordenada por popularidad(número de votos) diga ver por popularidad o pulse 3.");
 
 		$viewData->setMainMenuLink($this->getMainMenuLink());
-		$view = MenuView::create();
-		$view->render($viewData);
-	}
-
-	public function getCartelera($data)
-	{
-		list($totalPages, $films) = FilmAffinityApi::getInstance()->getCartelera($data[self::PAGE_PARAM], self::FILMS_BY_PAGE);
-		$viewData = $this->getFilmsPagedListViewData($films, $totalPages, $data[self::PAGE_PARAM], __FUNCTION__, $data);
-		$mainMenuLink = $this->getMainMenuLink();
-		$viewData->setMainMenuLink($mainMenuLink);
-		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, "menuCartelera"));
-		$viewData->setTitle("Peliculas en cartelera.");
+		$viewData->setPreviousPageLink($this->getMainMenuLink());
 		$view = MenuView::create();
 		$view->render($viewData);
 	}

@@ -60,6 +60,14 @@ class MenuOption
 		return trim(preg_replace($escapeSearch, $escapeReplacement, $this->voiceOption));
 	}
 
+	public function getEscapedInfoOption()
+	{
+		$escapeSearch = array('/á/', '/é/', '/í/', '/ó/', '/ú/', '/[^a-zA-Z 0-9ñÑ\-]+\s*/');
+		$escapeReplacement = array('a', 'e', 'i', 'o', 'u', ' ');
+
+		return trim(preg_replace($escapeSearch, $escapeReplacement, $this->infoOption));
+	}
+
 	/**
 	 * @return String
 	 */

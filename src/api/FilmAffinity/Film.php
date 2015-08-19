@@ -21,9 +21,11 @@ class Film
 	const RATING = "puntuacion";
 	const RATE_COUNT = "total de votaciones";
 	const PREMIERE = "premiere";
+	const FILM_ID = "filmId";
 
 	private $rawData;
 	private $recommendation;
+	private $filmId;
 
 	function __construct($rawData)
 	{
@@ -117,7 +119,7 @@ class Film
 
 	public function getRating()
 	{
-		return $this->getKey(self::RATING);
+		return (float) $this->getKey(self::RATING);
 	}
 
 	public function getRateCount()
@@ -143,6 +145,16 @@ class Film
 	public function getRecommendation()
 	{
 		return $this->recommendation;
+	}
+
+	public function getFilmId()
+	{
+		return $this->filmId;
+	}
+
+	public function setFilmId($filmId)
+	{
+		return $this->filmId = $filmId;
 	}
 
 	public function getPremiereDate()

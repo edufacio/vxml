@@ -254,6 +254,10 @@ Class NavigationMap
 			'saveCinema' => array(
 				self::PARAMS => array(ProfileController::CINEMA),
 			),
+			'deleteCinemas' => array(
+				self::PARAMS => array(),
+			),
+
 		),
 		'Login' => array(
 			'index' => array(
@@ -355,6 +359,10 @@ Class NavigationMap
 			),
 			'searchDirectorForm' => array(
 				self::PARAMS => array('query', 'page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+			'viewRecomendations' => array(
+				self::PARAMS => array('page'),
 				self::DEFAULT_VALUE => array('page' => 0),
 			),
 			'getFilm' => array(

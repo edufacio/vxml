@@ -12,7 +12,7 @@ class MenuView extends View
 	public function render($viewData)
 	{
 		$this->assertDataIsValid($viewData);
-		$this->renderOnTemplate($viewData, "Menu.phtml");
+		return $this->renderOnTemplate($viewData, "Menu.phtml");
 	}
 
 	/**

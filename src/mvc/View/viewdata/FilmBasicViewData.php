@@ -12,7 +12,13 @@ class FilmBasicViewData extends MenuViewData
 	{
 		$this->addOption("Detalles de pelicula", "más detalles", $filmDetails);
 		$rating = $film->hasRating() ? "Puntuacion de filmafiniti: " . $film->getRating() . "sobre 10 de " . $film->getRateCount() . " votos" . $this->getWeakBreak() : '';
-		$recommendation = $film->hasRecomendation() ? "Puntuacion sobre tus gustos: " . $film->getRecommendation() . "sobre 10" . $this->getWeakBreak() : '';
+		$recommendation =  "Puntuacion sobre tus gustos: ";
+		if (CurrentSession::getInstance()->isLogged()) {
+			$recommendation .= $film->hasRecomendation() ?  "{$film->getRecommendation()} sobre 10" : 'No tenemos suficiente información en tu perfil';
+			$recommendation .= $this->getWeakBreak();
+		} else {
+			$recommendation .= "Por favor identificate o registrate para poder recomendarte peliculas dependiendo tus gustos";
+		}
 		$premiere = $film->hasPremiereDate() ? "Fecha de estreno: " . $film->getPremiereDate()  . $this->getWeakBreak(): '';
 		$this->setPrompt(
 			"Titulo: " . $film->getTitle() . $this->getWeakBreak()

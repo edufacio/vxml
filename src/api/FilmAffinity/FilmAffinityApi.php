@@ -1,37 +1,4 @@
 <?
-//require_once '/Users/econtreras/branches/vxml/src/api/filmaffinity/simple_html_dom.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/filmaffinity/Showtime.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/filmaffinity/SessionTime.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/filmaffinity/Cinema.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/filmaffinity/Film.php';
-//require_once '/Users/econtreras/branches/vxml/src/Injector.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/storage/DbConfig.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/storage/DbStorage.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/storage/StorageObject.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/filmpreferences/FilmCacheStorage.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/filmpreferences/FilmCache.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/filmpreferences/FilmRecomendationCalculator.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/filmpreferences/FilmPreferences.php';
-//require_once '/Users/econtreras/branches/vxml/src/api/filmpreferences/FilmPreferencesStorage.php';
-//date_default_timezone_set('Europe/Berlin');
-//$f = new FilmAffinityApi();
-//$ss = $f->getShowtimes('ES-M', array(451, 261), 19, 0);
-//
-//var_dump(count($ss));
-///* @var ShowTime  $s */
-///* @var Sessiontime  $sessionTime */
-////var_dump($ss[0]->getSessionTimes(), $ss[0]->getCinema(), $ss[0]->getFilm()->getTitle());
-//foreach ($ss as $s) {
-//	echo $s->getFilm()->getTitle() . ',' . $s->getFilm()->getRating() .','. $s->getFilm()->getRecommendation() . "\n";
-//	foreach ($s->getSessionTimes() as $sessionTime){
-//		echo "\t" . $sessionTime->getCinema()->getName() . ":\n";
-//		foreach($sessionTime->getTimes() as $t) {
-//			echo "\t\t" . date('r', $t) . "\n";
-//		}
-//
-//	}
-//}
-
 class FilmAffinityApi
 {
 	const BASE_URL = 'http://www.filmaffinity.com/';
@@ -67,9 +34,15 @@ class FilmAffinityApi
 	public function getShowtimes($provinceId, $cinemaIds, $startHour, $endHour)
 	{
 		$allCinemas = $this->getAllCinemas($provinceId);
+		if (empty($cinemaIds)) {
+			$cinemaIds = array_keys($allCinemas);
+		}
 		$showTimes = array();
 		$films = array();
 		foreach ($cinemaIds as $cinemaId) {
+			if (!isset($allCinemas[$cinemaId])) {
+				continue;
+			}
 			$cinema = $allCinemas[$cinemaId];
 			$pageDom = $this->request(str_replace('%id%', $cinemaId, self::SHOWTIMES_QUERY));
 			$movies = $pageDom->find('div[class=movie]');
@@ -107,7 +80,7 @@ class FilmAffinityApi
 		}
 
 		if ($itemA->getFilm()->hasRating() && $itemB->getFilm()->hasRating()) {
-				return 100 * ($itemA->getFilm()->getRating() - $itemA->getFilm()->getRating());
+				return 100 * ($itemB->getFilm()->getRating() - $itemA->getFilm()->getRating());
 		} elseif ($itemA->getFilm()->hasRating()) {
 			return -1;
 		} elseif ($itemB->getFilm()->hasRating()) {
@@ -117,12 +90,12 @@ class FilmAffinityApi
 		}
 	}
 
-	private function getValidShowTimeSessions($movie, $minDuration, $startTime, $endTime)
+	private function getValidShowTimeSessions($movie, $minDuration, $startTime = null , $endTime = null)
 	{
 		$validSessions = array();
 		$currentDay = date('j');
-		$startTimestamp = strtotime("$startTime:00");
-		$endTimestamp = strtotime("$endTime:00");
+		$startTimestamp =  $startTime !== null ? strtotime("$startTime:00") : 0;
+		$endTimestamp = $endTime !== null ? strtotime("$endTime:00") : strtotime("+1 month");
 		if ($endTimestamp < $startTimestamp) {
 			$endTimestamp += 3600 * 24;
 		}
@@ -156,7 +129,7 @@ class FilmAffinityApi
 	public function getCinemasPaginated($provinceId, $page, $cinemasPerPage)
 	{
 		$allCinemas = $this->getAllCinemas($provinceId);
-		$cinemasPaginated = array_slice($allCinemas, $page * $cinemasPerPage, $cinemasPerPage);
+		$cinemasPaginated = array_slice($allCinemas, $page * $cinemasPerPage, $cinemasPerPage, true);
 		$totalPages = ceil(count($allCinemas) / $cinemasPerPage);
 		return array($totalPages, $cinemasPaginated);
 	}
@@ -165,7 +138,9 @@ class FilmAffinityApi
 		$cinemas = $this->getAllCinemas($provinceId);
 		$cinemasFound = array();
 		foreach ($cinemaIds as $cinemaId) {
-			$cinemasFound[$cinemaId] = $cinemas[$cinemaId];
+			if (isset($cinemas[$cinemaId])) {
+				$cinemasFound[$cinemaId] = $cinemas[$cinemaId];
+			}
 		}
 		return $cinemasFound;
 	}
@@ -200,6 +175,7 @@ class FilmAffinityApi
 			$filmCachestorage->save($cache);
 		}
 		$film = new Film($cache->getContent());
+		$film->setFilmId($filmId);
 		return FilmRecomendationCalculator::getInstance()->calculate($film);
 	}
 

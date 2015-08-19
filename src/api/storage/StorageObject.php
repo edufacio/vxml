@@ -41,6 +41,6 @@ abstract class StorageObject {
 	}
 
 	protected function exist($column) {
-		return isset($this->rawRecord[$column]);
+		return isset($this->rawRecord[$column]) && $this->rawRecord[$column] !== null;
 	}
 }

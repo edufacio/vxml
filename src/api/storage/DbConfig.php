@@ -23,10 +23,10 @@ class DbConfig {
 
 	public function getDbConfig() {
 		return array(
-			self::HOST => 'mysql7.000webhost.com',
+			self::HOST => 'mysql6.000webhost.com',
 			//self::HOST => '127.0.0.1',
-			self::USER => 'a6081555_user',
-			self::DB_NAME => 'a6081555_db',
+			self::USER => 'a1078006_user',
+			self::DB_NAME => 'a1078006_db',
 			self::PASSWD => 'vxmlPFC6',
 		);
 	}
