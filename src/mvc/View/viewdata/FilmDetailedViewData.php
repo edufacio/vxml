@@ -9,8 +9,16 @@ class FilmDetailedViewData extends MenuViewData
 		return Injector::get('FilmDetailedViewData');
 	}
 
-	public function setFilm(Film $film)
+	public function setFilm(Film $film, Link $reviewLink)
 	{
+		if ($film->getReviewNumbers() > 0) {
+			$reviewText = "Esta película contiene {$film->getReviewNumbers()} críticas de usuarios, para oirlas diga oir críticas";
+			$this->addOption("Oir Criticas de usuarios", "oir críticas", $reviewLink);
+		} else {
+			$reviewText = "Esta película aún no contiene críticas de usuarios";
+		}
+
+
 		$rating = $film->hasRating() ? "Puntuacion: " . $film->getRating() . "sobre 10 de " . $film->getRateCount() . " votos" . $this->getWeakBreak() : '';
 		$premiere = $film->hasPremiereDate() ? "Fecha de estreno: " . $film->getPremiereDate()  . $this->getWeakBreak(): '';
 		$recommendation =  "Puntuacion sobre tus gustos: ";
@@ -36,6 +44,7 @@ class FilmDetailedViewData extends MenuViewData
 				. "Duración: " . $film->getDuration() . " minutos" . $this->getWeakBreak()
 				. "Críticas" . $film->getCriticts() . $this->getWeakBreak()
 				. "Sinopsis: " . $film->getSynopsis() . $this->getWeakBreak()
+				. $reviewText
 		);
 		$this->setTitle("Información Detallada  sobre la película: " . $film->getTitle());
 	}

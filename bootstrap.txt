@@ -9,5 +9,6 @@ src/mvc/view/viewdata/SimpleViewData.php
 src/mvc/view/viewdata/MenuViewData.php
 src/mvc/view
 src/mvc/controller/Controller.php
+src/mvc/controller/FilmController.php
 src/mvc/controller/
 src/mvc/NavigationMap.php

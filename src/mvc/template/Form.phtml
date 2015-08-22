@@ -8,14 +8,16 @@
 			<?= $viewData->getGrammar(); ?>
 
 			<prompt bargeintype="hotword">
-				<?=$viewData->getPrompt(); ?>
-				<? if ($viewData->existsPreviousPageLink()) { ?>
-					<?= $viewData->getPreviousPagePrompt(); ?>
-				<? } ?>
+				<prosody rate="fast">
+					<?=$viewData->getPrompt(); ?>
+					<? if ($viewData->existsPreviousPageLink()) { ?>
+						<?= $viewData->getPreviousPagePrompt(); ?>
+					<? } ?>
 
-				<? if ($viewData->existsMainMenuLink()) { ?>
-					<?= $viewData->getMainMenuPrompt(); ?>
-				<? } ?>
+					<? if ($viewData->existsMainMenuLink()) { ?>
+						<?= $viewData->getMainMenuPrompt(); ?>
+					<? } ?>
+				</prosody>
 			</prompt>
 
 			<noinput>

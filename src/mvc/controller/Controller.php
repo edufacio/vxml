@@ -13,7 +13,7 @@ Abstract Class Controller
 
 	abstract public function index($data);
 
-	protected function getLink($controllerName, $action, $params = array())
+	protected function getLink($controllerName, $action = 'index', $params = array())
 	{
 		$validParams = $this->assertLinkIsValid($controllerName, $action, $params);
 

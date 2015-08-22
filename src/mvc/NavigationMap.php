@@ -295,26 +295,24 @@ Class NavigationMap
 			),
 
 		),
-		'IndexVxmlFilm' => array(
+		'Film' => array(
+			'getFilm' => array(
+				self::PARAMS => array('filmId', 'breadCrumb'),
+				self::OPTIONAL_PARAMS => array('breadCrumb'),
+			),
+			'getFilmDetailed' => array(
+				self::PARAMS => array('filmId', 'breadCrumb'),
+				self::OPTIONAL_PARAMS => array('breadCrumb'),
+			),
+			'getReview' => array(
+				self::PARAMS => array('filmId', 'breadCrumb', 'page', 'review_complete'),
+				self::OPTIONAL_PARAMS => array('breadCrumb'),
+				self::DEFAULT_VALUE => array('page' => 0, 'review_complete' => 0),
+			),
+		),
+
+		'Cartelera' => array(
 			'index' => array(
-				self::PARAMS => array(),
-			),
-			'menuSearch' => array(
-				self::PARAMS => array(),
-			),
-			'menuCartelera' => array(
-				self::PARAMS => array(),
-			),
-			'menuNextRelease' => array(
-				self::PARAMS => array(),
-			),
-			'searchTitle' => array(
-				self::PARAMS => array(),
-			),
-			'searchActor' => array(
-				self::PARAMS => array(),
-			),
-			'searchDirector' => array(
 				self::PARAMS => array(),
 			),
 			'getCartelera' => array(
@@ -333,21 +331,19 @@ Class NavigationMap
 				self::PARAMS => array('page'),
 				self::DEFAULT_VALUE => array('page' => 0),
 			),
-			'getNextRelease' => array(
-				self::PARAMS => array('page'),
-				self::DEFAULT_VALUE => array('page' => 0),
+		),
+		'Search' => array(
+			'index' => array(
+				self::PARAMS => array(),
 			),
-			'getNextReleaseByRating' => array(
-				self::PARAMS => array('page'),
-				self::DEFAULT_VALUE => array('page' => 0),
+			'searchTitle' => array(
+				self::PARAMS => array(),
 			),
-			'getNextReleaseByDate' => array(
-				self::PARAMS => array('page'),
-				self::DEFAULT_VALUE => array('page' => 0),
+			'searchActor' => array(
+				self::PARAMS => array(),
 			),
-			'getNextReleaseByVotes' => array(
-				self::PARAMS => array('page'),
-				self::DEFAULT_VALUE => array('page' => 0),
+			'searchDirector' => array(
+				self::PARAMS => array(),
 			),
 			'searchTitleForm' => array(
 				self::PARAMS => array('query', 'page'),
@@ -361,17 +357,34 @@ Class NavigationMap
 				self::PARAMS => array('query', 'page'),
 				self::DEFAULT_VALUE => array('page' => 0),
 			),
-			'viewRecomendations' => array(
+		),
+
+		'NextRelease' => array(
+			'index' => array(
+				self::PARAMS => array(),
+			),
+			'getNextReleaseByRating' => array(
 				self::PARAMS => array('page'),
 				self::DEFAULT_VALUE => array('page' => 0),
 			),
-			'getFilm' => array(
-				self::PARAMS => array('filmId', 'breadCrumb'),
-				self::OPTIONAL_PARAMS => array('breadCrumb'),
+			'getNextReleaseByDate' => array(
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),
 			),
-			'getFilmDetailed' => array(
-				self::PARAMS => array('filmId', 'breadCrumb'),
-				self::OPTIONAL_PARAMS => array('breadCrumb'),
+			'getNextReleaseByVotes' => array(
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),
+			),
+		),
+
+		'Recommendation' => array(
+			'index' => array(
+				self::PARAMS => array(),
+			),
+		),
+		'IndexVxmlFilm' => array(
+			'index' => array(
+				self::PARAMS => array(),
 			),
 		),
 	);

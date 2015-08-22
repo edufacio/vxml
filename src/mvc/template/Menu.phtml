@@ -9,10 +9,12 @@
 
 		<field name="menuOption">
 			<prompt bargeintype="hotword">
-
+				<prosody rate="fast">
 				<?= $viewData->getTitle()?> <break/>
+				</prosody>
 			</prompt>
 			<prompt bargeintype="hotword">
+				<prosody rate="fast">
 				<?=$viewData->getPrompt(); ?>
 				<? if ($viewData->existsPreviousPageLink()) { ?>
 					<?= $viewData->getPreviousPagePrompt() ?>
@@ -21,6 +23,7 @@
 				<? if ($viewData->existsMainMenuLink()) { ?>
 					<?= $viewData->getMainMenuPrompt() ?>
 				<? } ?>
+				</prosody>
 			</prompt>
 
 			<?= $viewData->getGrammar() ?>

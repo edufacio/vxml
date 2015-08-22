@@ -2,7 +2,6 @@
 
 class ShowTimeViewData extends PagedListViewData
 {
-
 	/**
 	 * @return ShowTimeViewData
 	 */

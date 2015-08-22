@@ -22,6 +22,7 @@ class Film
 	const RATE_COUNT = "total de votaciones";
 	const PREMIERE = "premiere";
 	const FILM_ID = "filmId";
+	const REVIEWS_NUMBER = "reviewsNumber";
 
 	private $rawData;
 	private $recommendation;
@@ -155,6 +156,10 @@ class Film
 	public function setFilmId($filmId)
 	{
 		return $this->filmId = $filmId;
+	}
+
+	public function getReviewNumbers() {
+		return $this->getKey(self::REVIEWS_NUMBER);
 	}
 
 	public function getPremiereDate()

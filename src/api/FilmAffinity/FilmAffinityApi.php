@@ -1,4 +1,8 @@
 <?
+require_once dirname(__FILE__) . "/../../../Bootstrap.php";
+BootStrap::load();
+var_dump(FilmAffinityApi::getInstance()->getReview(375488, 6));
+die;
 class FilmAffinityApi
 {
 	const BASE_URL = 'http://www.filmaffinity.com/';
@@ -13,6 +17,8 @@ class FilmAffinityApi
 	const NEXT_RELEASE_BY_RATING_QUERY = 'es/topcat.php?id=upc_th_es';
 	const NEXT_RELEASE_BY_POPULAR_QUERY = 'es/countcat.php?id=upc_th_es';
 	const NEXT_RELEASE_BY_RELEASE_QUERY = 'es/rdcat.php?id=upc_th_es';
+	const REVIEWS_QUERY = 'es/reviews/%page%/%id%.html';
+	const REVIEWS_PER_PAGE = '5';
 
 	const FILM_QUERY = 'es/film%id%.html';
 	const CINEMAS_QUERY = 'es/theaters.php?state=%id%';
@@ -31,6 +37,36 @@ class FilmAffinityApi
 		return self::$instance;
 	}
 
+	public function getReview($filmId, $page)
+	{
+		$realPage = floor($page / self::REVIEWS_PER_PAGE) + 1;
+		$pageDom = $this->request(str_replace(array('%id%', '%page%'), array($filmId, $realPage), self::REVIEWS_QUERY));
+		$total = $this->getReviewNumbers($pageDom);
+		$internalPage = $page % self::REVIEWS_PER_PAGE;
+		$reviewDom = $pageDom->find('div[class=fa-shadow movie-review-wrapper rw-item]', $internalPage);
+		$author = $reviewDom->find('div[class=mr-user-nick]', 0)->text();
+		$rating = $reviewDom->find('div[class=user-reviews-movie-rating]', 0)->text();
+		$date = $reviewDom->find('div[class=review-date]', 0)->text();
+		$title = $reviewDom->find('div[class=review-title]', 0)->text();
+		$publicText = $reviewDom->find('div[class=review-text1]', 0)->text();
+		$spoiler = $reviewDom->find('div[class=review-text2]', 0);
+		$spoilerText = $spoiler !== null ? $spoiler->text() : null;
+
+		$review = new Review($author, $date, $publicText, $rating, $spoilerText, $title);
+		return array($total, $review);
+	}
+
+	public function getReviewNumbers($pageDom)
+	{
+		$tabs = $pageDom->find('ul[class=ntabs] li');
+		foreach ($tabs as $tab) {
+			if (preg_match('/Crítica/', $tab->text())) {
+				return $this->getId($tab->find('em', 0)->text());
+			}
+		}
+		return 0;
+	}
+
 	public function getShowtimes($provinceId, $cinemaIds, $startHour, $endHour)
 	{
 		$allCinemas = $this->getAllCinemas($provinceId);
@@ -47,7 +83,7 @@ class FilmAffinityApi
 			$pageDom = $this->request(str_replace('%id%', $cinemaId, self::SHOWTIMES_QUERY));
 			$movies = $pageDom->find('div[class=movie]');
 			foreach ($movies as $movie) {
-				$minDuration = intval(reset($movie->find('[span class=runtime]'))->text());
+				$minDuration = intval($movie->find('span [class=runtime]', 0)->text());
 				$sessions = $this->getValidShowTimeSessions($movie, $minDuration, $startHour, $endHour);
 				if (!empty($sessions)) {
 					$filmId = $this->getId($movie->id);
@@ -74,13 +110,14 @@ class FilmAffinityApi
 	 *
 	 * @return mixed
 	 */
-	private function sortByRating($itemA, $itemB) {
+	private function sortByRating($itemA, $itemB)
+	{
 		if ($itemA->getFilm()->hasRecomendation() && $itemB->getFilm()->hasRecomendation()) {
 			return 100 * ($itemB->getFilm()->getRecommendation() - $itemA->getFilm()->getRecommendation());
 		}
 
 		if ($itemA->getFilm()->hasRating() && $itemB->getFilm()->hasRating()) {
-				return 100 * ($itemB->getFilm()->getRating() - $itemA->getFilm()->getRating());
+			return 100 * ($itemB->getFilm()->getRating() - $itemA->getFilm()->getRating());
 		} elseif ($itemA->getFilm()->hasRating()) {
 			return -1;
 		} elseif ($itemB->getFilm()->hasRating()) {
@@ -90,11 +127,11 @@ class FilmAffinityApi
 		}
 	}
 
-	private function getValidShowTimeSessions($movie, $minDuration, $startTime = null , $endTime = null)
+	private function getValidShowTimeSessions($movie, $minDuration, $startTime = null, $endTime = null)
 	{
 		$validSessions = array();
 		$currentDay = date('j');
-		$startTimestamp =  $startTime !== null ? strtotime("$startTime:00") : 0;
+		$startTimestamp = $startTime !== null ? strtotime("$startTime:00") : 0;
 		$endTimestamp = $endTime !== null ? strtotime("$endTime:00") : strtotime("+1 month");
 		if ($endTimestamp < $startTimestamp) {
 			$endTimestamp += 3600 * 24;
@@ -134,7 +171,8 @@ class FilmAffinityApi
 		return array($totalPages, $cinemasPaginated);
 	}
 
-	public function getCinemas($provinceId, array $cinemaIds) {
+	public function getCinemas($provinceId, array $cinemaIds)
+	{
 		$cinemas = $this->getAllCinemas($provinceId);
 		$cinemasFound = array();
 		foreach ($cinemaIds as $cinemaId) {
@@ -167,7 +205,7 @@ class FilmAffinityApi
 	 */
 	public function getFilm($filmId)
 	{
-		$filmCachestorage  = FilmCacheStorage::getInstance();
+		$filmCachestorage = FilmCacheStorage::getInstance();
 		$cache = $filmCachestorage->getCache($filmId);
 		if ($cache->isExpired()) {
 			$rawFilmData = $this->requestFilmData($filmId);
@@ -179,29 +217,32 @@ class FilmAffinityApi
 		return FilmRecomendationCalculator::getInstance()->calculate($film);
 	}
 
-	private function requestFilmData($filmId) {
+	private function requestFilmData($filmId)
+	{
 		$filmRaw = array();
 		$pageDom = $this->request(str_replace('%id%', $filmId, self::FILM_QUERY));
 		$keysContent = $pageDom->find('dl[class=movie-info] dt');
 
 		$content = $pageDom->find('dl[class=movie-info] dd');
-		$mainTitle = reset($pageDom->find('h1[id=main-title] span'))->text();
+		$filmRaw[Film::REVIEWS_NUMBER] = $this->getReviewNumbers($pageDom);
+		$mainTitle = $pageDom->find('h1[id=main-title] span', 0)->text();
+
 		$filmRaw["titulo"] = $mainTitle;
 
 		foreach ($keysContent as $key => $value) {
 			$filmRaw[($value->text())] = preg_replace('/&[#\w]*;/', '', $content[$key]->text());
 		}
 
-		$ratingDiv = $pageDom->find('div[id=movie-rat-avg]');
+		$ratingDiv = $pageDom->find('div[id=movie-rat-avg]', 0);
 		if (!empty($ratingDiv)) {
-			$filmRaw["puntuacion"] = preg_replace('/,/', '.', reset($ratingDiv)->text());
-			$totalVotes = reset($pageDom->find('div[id=movie-count-rat] span'))->text();
+			$filmRaw["puntuacion"] = preg_replace('/,/', '.', $ratingDiv->text());
+			$totalVotes = $pageDom->find('div[id=movie-count-rat] span', 0)->text();
 			$filmRaw["total de votaciones"] = preg_replace('/\./', '', $totalVotes);
 		}
 
-		$premiereContent = $pageDom->find('div[id=movie-categories]');
+		$premiereContent = $pageDom->find('div[id=movie-categories]', 0);
 		if (!empty($premiereContent)) {
-			preg_match('/\d*\/\d*\/\d*/', reset($premiereContent)->text(), $match);
+			preg_match('/\d*\/\d*\/\d*/', $premiereContent->text(), $match);
 			$filmRaw[Film::PREMIERE] = $match[0];
 		}
 
@@ -418,8 +459,8 @@ class FilmAffinityApi
 		}
 		$pageDom = $this->request($query);
 		$films = $pageDom->find('div[class=mc-title] a');
-		$totalFilmsDom = reset($pageDom->find('div[class=sub-header-search]'));
-		if ($totalFilmsDom == false) {
+		$totalFilmsDom = $pageDom->find('div[class=sub-header-search]', 0);
+		if ($totalFilmsDom == null) {
 			return array(0, array());
 		}
 
