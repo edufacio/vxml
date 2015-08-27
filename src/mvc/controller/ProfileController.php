@@ -57,7 +57,7 @@ Class ProfileController extends Controller
 			. " Para ver o modificar sus géneros preferidos, diga géneros o marque 5"
 			. " Para ver o modificar sus cines preferidos, diga cines o marque 6");
 
-		$viewData->create()->setMainMenuLink($this->getMainMenuLink());
+		$viewData->setMainMenuLink($this->getMainMenuLink());
 		$view = MenuView::create();
 		$view->render($viewData);
 	}
@@ -188,7 +188,7 @@ Class ProfileController extends Controller
 		$blackListedDirectors = UserBackend::getInstance()->getDislikedDirectors(CurrentSession::getInstance()->getCurrentPhone());
 		if (!empty($blackListedDirectors)) {
 			$directorList = implode(',', $blackListedDirectors);
-			$prompt .= " Estos es la lista negra de directores : $directorList,
+			$prompt .= " Esta es su lista negra de directores : $directorList,
 			 para añadir un nuevo director a la lista negra diga nuevo director en lista negra, para borrarlos diga borrar lista negra";
 			$viewData->addOption("borrar lista negra", "borrar lista negra", $this->getLink(self::CONTROLLER_NAME, 'deleteBlackListedDirectors'));
 		} else {
@@ -277,7 +277,7 @@ Class ProfileController extends Controller
 		$blackListedActors = UserBackend::getInstance()->getDislikedActors(CurrentSession::getInstance()->getCurrentPhone());
 		if (!empty($blackListedActors)) {
 			$actorList = implode(',', $blackListedActors);
-			$prompt .= " Estos es la lista negra de actores : $actorList,
+			$prompt .= " Esta es su lista negra de actores : $actorList,
 			 para añadir un nuevo actor a la lista negra diga nuevo actor en lista negra, para borrarlos diga borrar lista negra";
 			$viewData->addOption("borrar lista negra", "borrar lista negra", $this->getLink(self::CONTROLLER_NAME, 'deleteBlackListedActors'));
 		} else {
@@ -366,7 +366,7 @@ Class ProfileController extends Controller
 		$blackListedGenres = UserBackend::getInstance()->getDislikedGenres(CurrentSession::getInstance()->getCurrentPhone());
 		if (!empty($blackListedGenres)) {
 			$genreList = implode(',', $blackListedGenres);
-			$prompt .= " Estos es tu lista negra de géneros : $genreList,
+			$prompt .= " Esta es su lista negra de géneros : $genreList,
 			 para añadir un nuevo género a la lista negra diga nuevo género en lista negra, para borrarlos diga borrar lista negra";
 			$viewData->addOption("borrar lista negra", "borrar lista negra", $this->getLink(self::CONTROLLER_NAME, 'deleteBlackListedGenres'));
 		} else {
@@ -466,7 +466,6 @@ Class ProfileController extends Controller
 		$currentPhone = CurrentSession::getInstance()->getCurrentPhone();
 		$userBackend = UserBackend::getInstance();
 		$user = $userBackend->getUser($currentPhone);
-
 		if ($user->hasProvinceId()) {
 			list($totalPages, $cinemas) = FilmAffinityApi::getInstance()->getCinemasPaginated($user->getProvinceId(), $data[self::PAGE_PARAM], self::CINEMA_PER_PAGE);
 			$viewData = $this->getCinemasPagedListViewData($cinemas, $totalPages, $data[self::PAGE_PARAM]);

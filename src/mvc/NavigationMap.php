@@ -108,7 +108,6 @@ Class NavigationMap
         $defaultParams = $this->getConfigValue($controllerName, $action, self::DEFAULT_VALUE);
         $optionalParams = $this->getConfigValue($controllerName, $action, self::OPTIONAL_PARAMS);
         $validParams = $this->getConfigValue($controllerName, $action, self::PARAMS);
-
         foreach ($validParams as $paramName) {
 	        if (isset($_POST[$paramName])) {
 		        $data[$paramName] = $_POST[$paramName];
@@ -250,6 +249,7 @@ Class NavigationMap
 			),
 			'chooseCinema' => array(
 				self::PARAMS => array(ProfileController::PAGE_PARAM),
+				self::DEFAULT_VALUE => array('page' => 0),
 			),
 			'saveCinema' => array(
 				self::PARAMS => array(ProfileController::CINEMA),
@@ -379,7 +379,8 @@ Class NavigationMap
 
 		'Recommendation' => array(
 			'index' => array(
-				self::PARAMS => array(),
+				self::PARAMS => array('page'),
+				self::DEFAULT_VALUE => array('page' => 0),º
 			),
 		),
 		'IndexVxmlFilm' => array(

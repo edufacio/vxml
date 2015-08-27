@@ -14,7 +14,7 @@ class FilmBasicViewData extends MenuViewData
 
 		if ($film->getReviewNumbers() > 0) {
 			$reviewText = "Esta película contiene {$film->getReviewNumbers()} críticas de usuarios, para oirlas diga oir críticas";
-			$this->addOption("Oir Criticas de usuarios", "oir críticas", $reviewLink);
+			$this->addOption("Oir Criticas de usuarios ", "oir críticas", $reviewLink);
 		} else {
 			$reviewText = "Esta película aún no contiene críticas de usuarios";
 		}

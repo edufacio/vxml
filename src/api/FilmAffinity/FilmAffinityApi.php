@@ -1,8 +1,4 @@
 <?
-require_once dirname(__FILE__) . "/../../../Bootstrap.php";
-BootStrap::load();
-var_dump(FilmAffinityApi::getInstance()->getReview(375488, 6));
-die;
 class FilmAffinityApi
 {
 	const BASE_URL = 'http://www.filmaffinity.com/';
@@ -83,7 +79,7 @@ class FilmAffinityApi
 			$pageDom = $this->request(str_replace('%id%', $cinemaId, self::SHOWTIMES_QUERY));
 			$movies = $pageDom->find('div[class=movie]');
 			foreach ($movies as $movie) {
-				$minDuration = intval($movie->find('span [class=runtime]', 0)->text());
+				$minDuration = intval($movie->find('span[class=runtime]', 0)->text());
 				$sessions = $this->getValidShowTimeSessions($movie, $minDuration, $startHour, $endHour);
 				if (!empty($sessions)) {
 					$filmId = $this->getId($movie->id);

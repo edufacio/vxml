@@ -41,7 +41,7 @@ Class NextReleaseController extends FilmController
 		$mainMenuLink = $this->getMainMenuLink();
 		$viewData->setMainMenuLink($mainMenuLink);
 		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME));
-		$viewData->setTitle("Próximos Estrenos ordenadas por puntuacion.");
+		$viewData->setTitle("Próximos Estrenos ordenados por puntuacion.");
 		$view = MenuView::create();
 		$view->render($viewData);
 	}
@@ -53,7 +53,7 @@ Class NextReleaseController extends FilmController
 		$mainMenuLink = $this->getMainMenuLink();
 		$viewData->setMainMenuLink($mainMenuLink);
 		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME));
-		$viewData->setTitle("Próximos Estrenos ordenadas por popularidad.");
+		$viewData->setTitle("Próximos Estrenos ordenados por popularidad.");
 		$view = MenuView::create();
 		$view->render($viewData);
 	}
@@ -65,7 +65,7 @@ Class NextReleaseController extends FilmController
 		$mainMenuLink = $this->getMainMenuLink();
 		$viewData->setMainMenuLink($mainMenuLink);
 		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME));
-		$viewData->setTitle("Próximos Estrenos ordenadas por fecha.");
+		$viewData->setTitle("Próximos Estrenos ordenados por fecha.");
 		$view = MenuView::create();
 		$view->render($viewData);
 	}

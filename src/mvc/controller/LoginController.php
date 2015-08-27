@@ -48,6 +48,7 @@ Class LoginController extends Controller
 		$viewData = $this->getPasswordForm();
 		$viewData->addHiddenParam(self::PASSWORD_CHECK, $data[self::PASSWORD]);
 		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, 'registerStepPassword1'));
+		$viewData->setPrompt("Por favor, vuelva a introducir los 8 dígitos de su contraseña de nuevo");
 		$viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'checkRegistration'));
 		FormView::create()->render($viewData);
 	}

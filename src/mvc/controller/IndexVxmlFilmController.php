@@ -29,8 +29,8 @@ Class IndexVxmlFilmController extends Controller
 		$viewData->addOption("cartelera", KeyPhone::KEY_2, $this->getLink(CarteleraController::CONTROLLER_NAME));
 		$viewData->addOption("proximos estrenos", "proximos estrenos", $this->getLink(NextReleaseController::CONTROLLER_NAME));
 		$viewData->addOption("proximos estrenos", KeyPhone::KEY_3, $this->getLink(NextReleaseController::CONTROLLER_NAME));
-		$viewData->addOption("que ver", "que ver", $this->getLink(self::CONTROLLER_NAME, "viewRecomendations"));
-		$viewData->addOption("que ver", KeyPhone::KEY_4, $this->getLink(self::CONTROLLER_NAME, "viewRecomendations"));
+		$viewData->addOption("que ver", "que ver", $this->getLink(RecommendationController::CONTROLLER_NAME));
+		$viewData->addOption("que ver", KeyPhone::KEY_4, $this->getLink(RecommendationController::CONTROLLER_NAME));
 		$viewData->addOption("tu perfil", "perfil", $this->getLink(ProfileController::CONTROLLER_NAME));
 		$viewData->addOption("tu perfil", KeyPhone::KEY_5, $this->getLink(ProfileController::CONTROLLER_NAME));
 		$viewData->addOption("salir de la cuenta", "salir", $this->getLink(LoginController::CONTROLLER_NAME, "logout"));

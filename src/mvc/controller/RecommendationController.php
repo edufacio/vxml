@@ -3,10 +3,6 @@ Class RecommendationController extends FilmController
 {
 	const CONTROLLER_NAME = 'Recommendation';
 
-	function __construct()
-	{
-	}
-
 	/**
 	 * @return RecommendationController
 	 */
@@ -52,26 +48,26 @@ Class RecommendationController extends FilmController
 	private function getShowTimeView($showTimes, $currentPageNumber, $totalPages)
 	{
 		$showTime = array_shift(array_slice($showTimes, $currentPageNumber, 1));
-		$filmLink = $this->getLink(self::CONTROLLER_NAME, 'getFilm', array(self::FILM_ID => $showTime->getFilm()->getFilmId()));
+		$filmLink = $this->getLink(FilmController::CONTROLLER_NAME, 'getFilm', array(self::FILM_ID => $showTime->getFilm()->getFilmId()));
 		$viewData = ShowTimeViewData::create();
-		$viewData->setShowTime($showTime, $filmLink);
 		$viewData->setTotalPages($totalPages);
 		$viewData->setCurrentPageNumber($currentPageNumber);
+		$viewData->setShowTime($showTime, $filmLink);
 		$params = array(self::PAGE_PARAM => $currentPageNumber);
-		$viewData->addHiddenParam(self::BREADCRUMBS, $this->getLink(self::CONTROLLER_NAME, 'viewRecomendations', $params)->getHrefEncoded());
+		$viewData->addHiddenParam(self::BREADCRUMBS, $this->getLink(self::CONTROLLER_NAME, 'index', $params)->getHrefEncoded());
 
 		if ($currentPageNumber > 0) {
 			$params[self::PAGE_PARAM] = 0;
-			$viewData->setFirstPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'viewRecomendations', $params));
+			$viewData->setFirstPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'index', $params));
 			$params[self::PAGE_PARAM] = $currentPageNumber - 1;
-			$viewData->setPreviousPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'viewRecomendations', $params));
+			$viewData->setPreviousPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'index', $params));
 		}
 
 		if ($currentPageNumber < $totalPages) {
 			$params[self::PAGE_PARAM] = $currentPageNumber + 1;
-			$viewData->setNextPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'viewRecomendations', $params));
+			$viewData->setNextPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'index', $params));
 			$params[self::PAGE_PARAM] = $totalPages;
-			$viewData->setLastPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'viewRecomendations', $params));
+			$viewData->setLastPageNumberLink($this->getLink(self::CONTROLLER_NAME, 'index', $params));
 		}
 		return $viewData;
 	}
