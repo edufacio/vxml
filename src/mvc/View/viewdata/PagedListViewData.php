@@ -2,14 +2,16 @@
 class PagedListViewData extends MenuViewData
 {
 
-	const PREVIOUS_PAGE = 'página anterior';
-	const FIRST_PAGE = 'primera página';
-	const NEXT_PAGE = 'página siguiente';
-	const LAST_PAGE = 'última página';
+	const PREVIOUS_PAGE = '%d% anterior';
+	const FIRST_PAGE = 'primera %d%';
+	const NEXT_PAGE = '%d% siguiente';
+	const LAST_PAGE = 'última %d%';
 	private $currentPageNumber;
 	private $totalPages;
 	private $titleList;
-	private $paginationOptions = array();
+	protected $paginationOptions = array();
+	private $pageName = 'página';
+
 
 	/**
 	 * @return PagedListViewData
@@ -61,7 +63,7 @@ class PagedListViewData extends MenuViewData
 	 */
 	public function setNextPageNumberLink(Link $nextPageLink)
 	{
-		$this->addPaginationOption("Ir a la página siguiente", self::NEXT_PAGE, $nextPageLink);
+		$this->addPaginationOption("Ir a la {$this->pageName} siguiente", str_replace('%d%', $this->pageName, self::NEXT_PAGE), $nextPageLink);
 	}
 
 	/**
@@ -69,7 +71,7 @@ class PagedListViewData extends MenuViewData
 	 */
 	public function setFirstPageNumberLink(Link $firstPageLink)
 	{
-		$this->addPaginationOption("Ir a la primera página", self::FIRST_PAGE, $firstPageLink);
+		$this->addPaginationOption("Ir a la primera {$this->pageName}", str_replace('%d%', $this->pageName, self::FIRST_PAGE), $firstPageLink);
 	}
 
 	/**
@@ -77,7 +79,7 @@ class PagedListViewData extends MenuViewData
 	 */
 	public function setLastPageNumberLink(Link $lastPageLink)
 	{
-		$this->addPaginationOption("Ir a la última página", self::LAST_PAGE, $lastPageLink);
+		$this->addPaginationOption("Ir a la ultima {$this->pageName}", str_replace('%d%', $this->pageName, self::LAST_PAGE), $lastPageLink);
 	}
 
 	/**
@@ -85,7 +87,7 @@ class PagedListViewData extends MenuViewData
 	 */
 	public function setPreviousPageNumberLink(Link $previousPageNumberLink)
 	{
-		$this->addPaginationOption("Ir a la página anterior", self::PREVIOUS_PAGE, $previousPageNumberLink);
+		$this->addPaginationOption("Ir a la {$this->pageName} anterior", str_replace('%d%', $this->pageName, self::PREVIOUS_PAGE), $previousPageNumberLink);
 	}
 
 	public function addPaginationOption($optionInfo, $option, Link $link)
@@ -121,7 +123,7 @@ class PagedListViewData extends MenuViewData
 	{
 		$prompt = "Estos son los resultados econtrados.";
 		if ($this->getTotalPages() > 0) {
-			$prompt = "Mostrando página " . $this->getCurrentPageNumber() . " de " . $this->getTotalPages() . ". ";
+			$prompt = "Mostrando {$this->pageName} " . $this->getCurrentPageNumber() . " de " . $this->getTotalPages() . ". ";
 		}
 		/* @var $option MenuOption */
 		foreach ($currentOptions as $option) {
@@ -152,5 +154,11 @@ class PagedListViewData extends MenuViewData
 		$prompt .= '.';
 		return $prompt;
 	}
+
+	public function setPageName($pageName)
+	{
+		$this->pageName = $pageName;
+	}
+
 }
 

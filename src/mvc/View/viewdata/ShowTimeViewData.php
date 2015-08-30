@@ -12,8 +12,10 @@ class ShowTimeViewData extends PagedListViewData
 
 	public function setShowTime(ShowTime $showTime, Link $linkFilmDetails)
 	{
+		$this->setPageName("Pelicula");
 		$film = $showTime->getFilm();
-		$this->addOption("Para ir a la ficha de " . $film->getTitle(), "ver película", $linkFilmDetails);
+		$this->addOption("ver ficha de película", "ver ficha de pelicula", $linkFilmDetails);
+		$this->addOption("ver ficha de película", KeyPhone::KEY_1, $linkFilmDetails);
 		$rating = $film->hasRating() ? "Puntuacion de filmafiniti: " . $film->getRating() . "sobre 10 de " . $film->getRateCount() . " votos" . $this->getWeakBreak() : '';
 		$recommendation = "Puntuacion sobre tus gustos: ";
 		$recommendation .= $film->hasRecomendation() ? "{$film->getRecommendation()} sobre 10" : 'No tenemos suficiente información en tu perfil';
@@ -39,15 +41,16 @@ class ShowTimeViewData extends PagedListViewData
 			}
 		}
 		$prompt .= $this->getWeakBreak() . "Sinopsis: " . $film->getSynopsis();
+		$prompt .= ". Para ver la ficha completa de la película diga ver ficha de pelicula o pulse 1";
 		$this->prompt = $prompt;
 
 	}
 
 	public function getPrompt()
 	{
-		$prompt = "Mostrando película " . $this->getCurrentPageNumber() . " de " . $this->getTotalPages() . ". ";
+		$prompt = "Mostrando película " . $this->getCurrentPageNumber() . " de " . $this->getTotalPages() . " ordenadas por recomendación. ";
 		$prompt .= $this->prompt;
-		foreach ($this->getOptions() as $option) {
+		foreach ($this->paginationOptions as $option) {
 			$prompt .= $this->buildPromptForOption($option);
 		}
 		return $prompt;

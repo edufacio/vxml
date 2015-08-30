@@ -37,12 +37,12 @@ class Injector
 		return isset(self::$bindings[$className]);
 	}
 
-	private function getBinding($className)
+	private static function getBinding($className)
 	{
 		return self::$bindings[$className];
 	}
 
-	private function createInstance($className, array $params)
+	private static function createInstance($className, array $params)
 	{
 		if (empty($params)) {
 			return new $className();

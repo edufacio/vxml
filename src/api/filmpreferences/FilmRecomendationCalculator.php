@@ -7,7 +7,7 @@ class FilmRecomendationCalculator
 	const DIRECTOR_MATCH = 20;
 	const MAX_PER_ACTOR = 20;
 	const ACTOR_MATCH = 10;
-	const MAX_PER_GENRE = 10;
+	const MAX_PER_GENRE = 20;
 	const GENRE_MATCH = 10;
 
 	private static $instance;
@@ -52,11 +52,10 @@ class FilmRecomendationCalculator
 		if ($film->hasRating()) {
 			$ratingNumber = floatval($film->getRating());
 			$maxPoints = max(min(intval(10 * $film->getRateCount()), self::MAX_PER_RATING), self::MIN_PER_RATING);
-			$dislikedPoints += $maxPoints;
-			$likedPoints +=  $ratingNumber * $maxPoints / 10;
-			return array($dislikedPoints, $likedPoints);
+			$points =  $ratingNumber * $maxPoints / 10 + $likedPoints - $dislikedPoints;
+			return array($maxPoints, $points);
 		} else {
-			return array(self::MIN_PER_RATING + $dislikedPoints, self::MIN_PER_RATING / 2 + $likedPoints);
+			return array(self::MIN_PER_RATING, self::MIN_PER_RATING / 2 + $likedPoints - $dislikedPoints);
 		}
 	}
 
@@ -89,8 +88,9 @@ class FilmRecomendationCalculator
 		if (!is_array($possibles)) {
 			return $points;
 		}
-
+		$stringToMatch = $this->escapeForMatch($stringToMatch);
 		foreach ($possibles as $possible) {
+			$possible = $this->escapeForMatch($possible);
 			if (preg_match("/$possible/i", $stringToMatch) > 0) {
 				$points += $pointsByMatch;
 				if ($points >= $maxPoints) {
@@ -99,5 +99,12 @@ class FilmRecomendationCalculator
 			}
 		}
 		return $points;
+	}
+
+	private function escapeForMatch($string) {
+		$escapeSearch = array('/á/i', '/é/i', '/í/i', '/ó/i', '/ú/i');
+		$escapeReplacement = array('a', 'e', 'i', 'o', 'u');
+
+		return trim(preg_replace($escapeSearch, $escapeReplacement, strtolower($string)));
 	}
 }

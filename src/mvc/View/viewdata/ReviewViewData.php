@@ -16,6 +16,7 @@ class ReviewViewData extends PagedListViewData
 	}
 
 	public function setReviewComplete(Review $review) {
+		$this->setPageName("Critica");
 		$prompt =
 			"Titulo: " . $review->getTitle() . $this->getWeakBreak()
 				. "Autor: " . $review->getAuthor() . $this->getWeakBreak()
@@ -28,6 +29,7 @@ class ReviewViewData extends PagedListViewData
 
 	public function setReview(Review $review)
 	{
+		$this->setPageName("Critica");
 		$prompt =
 			"Titulo: " . $review->getTitle() . $this->getWeakBreak()
 			. "Autor: " . $review->getAuthor() . $this->getWeakBreak()

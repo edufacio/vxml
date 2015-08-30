@@ -155,8 +155,8 @@ abstract class DbStorage
 			$params[] = $keys[$pkColumn];
 			$where[] = "$pkColumn = ?";
 		}
-
-		$result =  array_shift($this->get("where " . implode('and', $where), $params));
+		$results = $this->get("where " . implode('and', $where), $params);
+		$result =  array_shift($results);
 		return $result !== null ? $result : $default;
 	}
 

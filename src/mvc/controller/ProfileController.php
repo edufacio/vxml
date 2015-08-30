@@ -168,37 +168,17 @@ Class ProfileController extends Controller
 
 	public function menuDirectors($data, $prompt = '')
 	{
-		$viewData = MenuViewData::create();
-		$viewData->addOption("nuevo director favorito", "nuevo director favorito", $this->getLink(self::CONTROLLER_NAME, 'addFavouriteDirector'));
-		$viewData->addOption("nuevo director en lista negra", "nuevo director en lista negra", $this->getLink(self::CONTROLLER_NAME, 'addBlackListedDirector'));
-		$viewData->setMainMenuLink($this->getMainMenuLink());
-		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, 'index'));
-
-		$directors = UserBackend::getInstance()->getFavouriteDirectors(CurrentSession::getInstance()->getCurrentPhone());
-		if (!empty($directors)) {
-			$directorList = implode(',', $directors);
-			$prompt .= " Estos son tus directores favoritos: $directorList,
-			 para añadir un nuevo director favorito diga nuevo director favorito, para borrarlos diga borrar directores favoritos";
-			$viewData->addOption("borrar directores favoritos", "borrar directores favoritos", $this->getLink(self::CONTROLLER_NAME, 'deleteFavouriteDirectors'));
-		} else {
-			$prompt .= "Aun no tienes ningun director favorito guardado,
-			 para añadir un nuevo director diga nuevo director favorito.";
-		}
-
-		$blackListedDirectors = UserBackend::getInstance()->getDislikedDirectors(CurrentSession::getInstance()->getCurrentPhone());
-		if (!empty($blackListedDirectors)) {
-			$directorList = implode(',', $blackListedDirectors);
-			$prompt .= " Esta es su lista negra de directores : $directorList,
-			 para añadir un nuevo director a la lista negra diga nuevo director en lista negra, para borrarlos diga borrar lista negra";
-			$viewData->addOption("borrar lista negra", "borrar lista negra", $this->getLink(self::CONTROLLER_NAME, 'deleteBlackListedDirectors'));
-		} else {
-			$prompt .= "Aun no tienes lista negra de directores,
-			 para añadir un nuevo director a la lista negra diga nuevo director en lista negra.";
-		}
-
-		$viewData->setPrompt($prompt);
-		$view = MenuView::create();
-		$view->render($viewData);
+		$currentPhone = CurrentSession::getInstance()->getCurrentPhone();
+		$this->getMenuFavourite($prompt,
+			'director',
+			'directores',
+			UserBackend::getInstance()->getFavouriteDirectors($currentPhone),
+			UserBackend::getInstance()->getDislikedDirectors($currentPhone),
+			$this->getLink(self::CONTROLLER_NAME, 'addFavouriteDirector'),
+			$this->getLink(self::CONTROLLER_NAME, 'deleteFavouriteDirectors'),
+			$this->getLink(self::CONTROLLER_NAME, 'addBlackListedDirector'),
+			$this->getLink(self::CONTROLLER_NAME, 'deleteBlackListedDirectors')
+		);
 	}
 
 	public function addFavouriteDirector($data, $preprompt = '')
@@ -257,32 +237,52 @@ Class ProfileController extends Controller
 
 	public function menuActors($data, $prompt = '')
 	{
+		$currentPhone = CurrentSession::getInstance()->getCurrentPhone();
+		$this->getMenuFavourite($prompt,
+			'actor',
+			'actores',
+			UserBackend::getInstance()->getFavouriteActors($currentPhone),
+			UserBackend::getInstance()->getDislikedActors($currentPhone),
+			$this->getLink(self::CONTROLLER_NAME, 'addFavouriteActor'),
+			$this->getLink(self::CONTROLLER_NAME, 'deleteFavouriteActors'),
+			$this->getLink(self::CONTROLLER_NAME, 'addBlackListedActor'),
+			$this->getLink(self::CONTROLLER_NAME, 'deleteBlackListedActors')
+		);
+	}
+
+	private function getMenuFavourite($prompt, $name, $namePlural, $favList, $blackList, Link $addFavLink, Link $deleteFavLink, Link $addBlackList, Link $deleteBlackList) {
 		$viewData = MenuViewData::create();
-		$viewData->addOption("nuevo actor favorito", "nuevo actor favorito", $this->getLink(self::CONTROLLER_NAME, 'addFavouriteActor'));
-		$viewData->addOption("nuevo actor en lista negra", "nuevo actor en lista negra", $this->getLink(self::CONTROLLER_NAME, 'addBlackListedActor'));
+		$viewData->addOption("nuevo $name favorito", "nuevo $name favorito", $addFavLink);
+		$viewData->addOption("nuevo $name favorito", KeyPhone::KEY_1, $addFavLink);
 		$viewData->setMainMenuLink($this->getMainMenuLink());
 		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, 'index'));
 
-		$actors = UserBackend::getInstance()->getFavouriteActors(CurrentSession::getInstance()->getCurrentPhone());
-		if (!empty($actors)) {
-			$actorList = implode(',', $actors);
-			$prompt .= " Estos son tus actores favoritos: $actorList,
-			 para añadir un nuevo actor favorito diga nuevo actor favorito, para borrarlos diga borrar actores favoritos";
-			$viewData->addOption("borrar actores favoritos", "borrar actores favoritos", $this->getLink(self::CONTROLLER_NAME, 'deleteFavouriteActors'));
+		if (!empty($favList)) {
+			$addBlackListedKey = 3;
+			$nameList = implode(',', $favList);
+			$prompt .= " Estos son tus $namePlural favoritos: $nameList,
+			 para añadir un nuevo $name favorito diga nuevo $name favorito o pulse 1, para borrarlos diga borrar $namePlural favoritos o pulse 2. ";
+			$viewData->addOption("borrar $namePlural favoritos", "borrar $namePlural favoritos", $deleteFavLink);
+			$viewData->addOption("borrar $namePlural favoritos", KeyPhone::KEY_2, $deleteFavLink);
 		} else {
-			$prompt .= "Aun no tienes ningun actor favorito guardado,
-			 para añadir un nuevo actor diga nuevo actor favorito.";
+			$addBlackListedKey = 2;
+			$prompt .= "Aun no tienes ningun $name favorito guardado,
+			 para añadir un nuevo $name diga nuevo $name favorito o pulse 1. ";
 		}
 
+		$viewData->addOption("nuevo $name en lista negra", "nuevo $name en lista negra", $addBlackList);
+		$viewData->addOption("nuevo $name en lista negra", KeyPhone::fromDigit($addBlackListedKey), $addBlackList);
 		$blackListedActors = UserBackend::getInstance()->getDislikedActors(CurrentSession::getInstance()->getCurrentPhone());
-		if (!empty($blackListedActors)) {
-			$actorList = implode(',', $blackListedActors);
-			$prompt .= " Esta es su lista negra de actores : $actorList,
-			 para añadir un nuevo actor a la lista negra diga nuevo actor en lista negra, para borrarlos diga borrar lista negra";
-			$viewData->addOption("borrar lista negra", "borrar lista negra", $this->getLink(self::CONTROLLER_NAME, 'deleteBlackListedActors'));
+		if (!empty($blackList)) {
+			$deleteBlackListKey = $addBlackListedKey + 1;
+			$nameList = implode(',', $blackList);
+			$prompt .= " Esta es su lista negra de $namePlural : $nameList,
+			 para añadir un nuevo $name a la lista negra diga nuevo $name en lista negra o pulse  $addBlackListedKey, para borrarlos diga borrar lista negra o pulse $deleteBlackListKey";
+			$viewData->addOption("borrar lista negra", "borrar lista negra", $deleteBlackList);
+			$viewData->addOption("borrar lista negra", KeyPhone::fromDigit($deleteBlackListKey), $deleteBlackList);
 		} else {
-			$prompt .= "Aun no tienes lista negra de actores,
-			 para añadir un nuevo actor a la lista negra diga nuevo actor en lista negra.";
+			$prompt .= "Aun no tienes lista negra de $namePlural,
+			 para añadir un nuevo $name a la lista negra diga nuevo $name en lista negra o pulse $addBlackListedKey.";
 		}
 
 		$viewData->setPrompt($prompt);
@@ -333,7 +333,7 @@ Class ProfileController extends Controller
 	{
 		$phone = CurrentSession::getInstance()->getCurrentPhone();
 		$actorName = $data[self::NAME];
-		UserBackend::getInstance()->addDislikedActors($phone, $actorName);
+		UserBackend::getInstance()->addDislikedActor($phone, $actorName);
 		$this->menuActors($data, "Actor añadido a la lista negra de actores. ");
 	}
 
@@ -346,37 +346,17 @@ Class ProfileController extends Controller
 
 	public function menuGenres($data, $prompt = '')
 	{
-		$viewData = MenuViewData::create();
-		$viewData->addOption("nuevo género favorito", "nuevo género favorito", $this->getLink(self::CONTROLLER_NAME, 'addFavouriteGenre'));
-		$viewData->addOption("nuevo género en lista negra", "nuevo género en lista negra", $this->getLink(self::CONTROLLER_NAME, 'addBlackListedGenre'));
-		$viewData->setMainMenuLink($this->getMainMenuLink());
-		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, 'index'));
-
-		$genres = UserBackend::getInstance()->getFavouriteGenres(CurrentSession::getInstance()->getCurrentPhone());
-		if (!empty($genres)) {
-			$genreList = implode(',', $genres);
-			$prompt .= " Estos son tus géneros favoritos: $genreList,
-			 para añadir un nuevo genre favorito diga nuevo género favorito, para borrarlos diga borrar géneros favoritos";
-			$viewData->addOption("borrar géneros favoritos", "borrar géneros favoritos", $this->getLink(self::CONTROLLER_NAME, 'deleteFavouriteGenres'));
-		} else {
-			$prompt .= "Aun no tienes ningun género favorito guardado,
-			 para añadir un nuevo género diga nuevo género favorito.";
-		}
-
-		$blackListedGenres = UserBackend::getInstance()->getDislikedGenres(CurrentSession::getInstance()->getCurrentPhone());
-		if (!empty($blackListedGenres)) {
-			$genreList = implode(',', $blackListedGenres);
-			$prompt .= " Esta es su lista negra de géneros : $genreList,
-			 para añadir un nuevo género a la lista negra diga nuevo género en lista negra, para borrarlos diga borrar lista negra";
-			$viewData->addOption("borrar lista negra", "borrar lista negra", $this->getLink(self::CONTROLLER_NAME, 'deleteBlackListedGenres'));
-		} else {
-			$prompt .= "Aun no tienes lista negra de géneros,
-			 para añadir un nuevo genre a la lista negra diga nuevo género en lista negra.";
-		}
-
-		$viewData->setPrompt($prompt);
-		$view = MenuView::create();
-		$view->render($viewData);
+		$currentPhone = CurrentSession::getInstance()->getCurrentPhone();
+		$this->getMenuFavourite($prompt,
+			'género',
+			'géneros',
+			UserBackend::getInstance()->getFavouriteGenres($currentPhone),
+			UserBackend::getInstance()->getDislikedGenres($currentPhone),
+			$this->getLink(self::CONTROLLER_NAME, 'addFavouriteGenre'),
+			$this->getLink(self::CONTROLLER_NAME, 'deleteFavouriteGenres'),
+			$this->getLink(self::CONTROLLER_NAME, 'addBlackListedGenre'),
+			$this->getLink(self::CONTROLLER_NAME, 'deleteBlackListedGenres')
+		);
 	}
 
 	public function addFavouriteGenre($data, $preprompt = '')
@@ -384,8 +364,8 @@ Class ProfileController extends Controller
 		$viewData = FormViewData::create();
 		$viewData->setMainMenuLink($this->getMainMenuLink());
 		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, 'index'));
-		$viewData->addInputFromCsv(GRAMMAR_CSV_PATH . "/genres.csv");
-		$viewData->setPrompt("$preprompt Por favor diga el nombre del genre");
+		$viewData->addInputFromCsv(GRAMMAR_CSV_PATH . "/genre.csv");
+		$viewData->setPrompt("$preprompt Por favor diga el nombre del género");
 		$viewData->setVarReturnedName(self::NAME);
 		$viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'saveFavouriteGenre'));
 		FormView::create()->render($viewData);
@@ -412,7 +392,7 @@ Class ProfileController extends Controller
 		$viewData->setMainMenuLink($this->getMainMenuLink());
 		$viewData->setPreviousPageLink($this->getLink(self::CONTROLLER_NAME, 'index'));
 		$viewData->addInputFromCsv(GRAMMAR_CSV_PATH . "/genre.csv");
-		$viewData->setPrompt("$preprompt Por favor diga el nombre del genre");
+		$viewData->setPrompt("$preprompt Por favor diga el nombre del género");
 		$viewData->setVarReturnedName(self::NAME);
 		$viewData->setSubmitLink($this->getLink(self::CONTROLLER_NAME, 'saveBlackListedGenre'));
 		FormView::create()->render($viewData);
@@ -422,8 +402,8 @@ Class ProfileController extends Controller
 	{
 		$phone = CurrentSession::getInstance()->getCurrentPhone();
 		$genreName = $data[self::NAME];
-		UserBackend::getInstance()->addDislikedGenres($phone, $genreName);
-		$this->menuGenres($data, "género añadido a la lista negra de genrees. ");
+		UserBackend::getInstance()->addDislikedGenre($phone, $genreName);
+		$this->menuGenres($data, "género añadido a la lista negra de géneros. ");
 	}
 
 	public function deleteBlackListedGenres($data)
@@ -482,7 +462,7 @@ Class ProfileController extends Controller
 	{
 		$phone = CurrentSession::getInstance()->getCurrentPhone();
 		UserBackend::getInstance()->addFavouriteCinemas($phone, $data[self::CINEMA]);
-		$this->menuCinema($data, "cine añadido a cines favoritos");
+		$this->menuCinema($data, "Cine añadido a cines favoritos. ");
 	}
 
 	public function deleteCinemas($data, $prompt = '')

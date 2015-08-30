@@ -1,7 +1,7 @@
 <?
 class FilmAffinityApi
 {
-	const BASE_URL = 'http://www.filmaffinity.com/';
+	const BASE_URL = 'www.filmaffinity.com/';
 	const ACTOR_QUERY = 'es/search.php?stype=cast&stext=';
 	const TITLE_QUERY = 'es/search.php?stype=title&stext=';
 	const DIRECTOR_QUERY = 'es/search.php?stype=director&stext=';
@@ -435,9 +435,23 @@ class FilmAffinityApi
 
 	public function curl($page)
 	{
-		$c = curl_init(self::BASE_URL . $page);
-		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-		return curl_exec($c);
+		$url = self::BASE_URL . $page;
+		$handler = curl_init();
+		curl_setopt($handler, CURLOPT_URL, $url);
+		curl_setopt($handler, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($handler, CURLOPT_PROXYPORT, 80);
+		curl_setopt($handler, CURLOPT_PROXYTYPE, 'HTTP');
+		curl_setopt($handler, CURLOPT_HEADER, false);
+		curl_setopt($handler, CURLOPT_VERBOSE, false);
+		curl_setopt($handler, CURLOPT_HTTPPROXYTUNNEL, 0);
+		curl_setopt($handler, CURLOPT_USERAGENT, 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:13.0) Gecko/20100101 Firefox/13.0.1');
+		curl_setopt($handler, CURLOPT_FOLLOWLOCATION, true);
+		$result  = curl_exec($handler);
+		if ($result === false) {
+			throw new Exception(curl_error($handler), curl_errno($handler));
+		}
+		return $result;
+
 	}
 
 	private function getId($href)
